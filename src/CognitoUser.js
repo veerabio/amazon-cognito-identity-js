@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
-import { util } from 'aws-sdk/global';
+import { Buffer } from 'buffer/';
+//import createHmac from 'create-hmac';
+import * as crypto from 'crypto-browserify';
+const createHmac = crypto.createHmac;
 
 import BigInteger from './BigInteger';
 import AuthenticationHelper from './AuthenticationHelper';
@@ -159,7 +162,7 @@ export default class CognitoUser {
       jsonReq.UserContextData = this.getUserContextData();
     }
 
-    this.client.makeUnauthenticatedRequest('initiateAuth', jsonReq, (err, data) => {
+    this.client.request('InitiateAuth', jsonReq, (err, data) => {
       if (err) {
         return callback.onFailure(err);
       }
@@ -177,7 +180,7 @@ export default class CognitoUser {
   }
 
   /**
-   * This is used for authenticating the user. it calls the AuthenticationHelper for SRP related
+   * This is used for authenticating the user.
    * stuff
    * @param {AuthenticationDetails} authDetails Contains the authentication data
    * @param {object} callback Result callback map.
@@ -192,6 +195,32 @@ export default class CognitoUser {
    * @returns {void}
    */
   authenticateUser(authDetails, callback) {
+    if (this.authenticationFlowType === 'USER_PASSWORD_AUTH') {
+      return this.authenticateUserPlainUsernamePassword(authDetails, callback);
+    } else if (this.authenticationFlowType === 'USER_SRP_AUTH') {
+      return this.authenticateUserDefaultAuth(authDetails, callback);
+    }
+    return callback.onFailure(new Error('Authentication flow type is invalid.'));
+  }
+
+  /**
+   * PRIVATE ONLY: This is an internal only method and should not
+   * be directly called by the consumers.
+   * It calls the AuthenticationHelper for SRP related
+   * stuff
+   * @param {AuthenticationDetails} authDetails Contains the authentication data
+   * @param {object} callback Result callback map.
+   * @param {onFailure} callback.onFailure Called on any error.
+   * @param {newPasswordRequired} callback.newPasswordRequired new
+   *        password and any required attributes are required to continue
+   * @param {mfaRequired} callback.mfaRequired MFA code
+   *        required to continue.
+   * @param {customChallenge} callback.customChallenge Custom challenge
+   *        response required to continue.
+   * @param {authSuccess} callback.onSuccess Called on success with the new session.
+   * @returns {void}
+   */
+  authenticateUserDefaultAuth(authDetails, callback) {
     const authenticationHelper = new AuthenticationHelper(
       this.pool.getUserPoolId().split('_')[1]);
     const dateHelper = new DateHelper();
@@ -227,7 +256,7 @@ export default class CognitoUser {
         jsonReq.UserContextData = this.getUserContextData(this.username);
       }
 
-      this.client.makeUnauthenticatedRequest('initiateAuth', jsonReq, (err, data) => {
+      this.client.request('InitiateAuth', jsonReq, (err, data) => {
         if (err) {
           return callback.onFailure(err);
         }
@@ -252,12 +281,14 @@ export default class CognitoUser {
 
             const dateNow = dateHelper.getNowString();
 
-            const signatureString = util.crypto.hmac(hkdf, util.buffer.concat([
-              new util.Buffer(this.pool.getUserPoolId().split('_')[1], 'utf8'),
-              new util.Buffer(this.username, 'utf8'),
-              new util.Buffer(challengeParameters.SECRET_BLOCK, 'base64'),
-              new util.Buffer(dateNow, 'utf8'),
-            ]), 'base64', 'sha256');
+            const signatureString = createHmac('sha256', hkdf)
+              .update(Buffer.concat([
+                Buffer.from(this.pool.getUserPoolId().split('_')[1], 'utf8'),
+                Buffer.from(this.username, 'utf8'),
+                Buffer.from(challengeParameters.SECRET_BLOCK, 'base64'),
+                Buffer.from(dateNow, 'utf8'),
+              ]))
+              .digest('base64');
 
             const challengeResponses = {};
 
@@ -271,7 +302,7 @@ export default class CognitoUser {
             }
 
             const respondToAuthChallenge = (challenge, challengeCallback) =>
-              this.client.makeUnauthenticatedRequest('respondToAuthChallenge', challenge,
+              this.client.request('RespondToAuthChallenge', challenge,
                 (errChallenge, dataChallenge) => {
                   if (errChallenge && errChallenge.code === 'ResourceNotFoundException' &&
                       errChallenge.message.toLowerCase().indexOf('device') !== -1) {
@@ -340,6 +371,51 @@ export default class CognitoUser {
   }
 
   /**
+   * PRIVATE ONLY: This is an internal only method and should not
+   * be directly called by the consumers.
+   * @param {AuthenticationDetails} authDetails Contains the authentication data.
+   * @param {object} callback Result callback map.
+   * @param {onFailure} callback.onFailure Called on any error.
+   * @param {mfaRequired} callback.mfaRequired MFA code
+   *        required to continue.
+   * @param {authSuccess} callback.onSuccess Called on success with the new session.
+   * @returns {void}
+   */
+  authenticateUserPlainUsernamePassword(authDetails, callback) {
+    const authParameters = {};
+    authParameters.USERNAME = this.username;
+    authParameters.PASSWORD = authDetails.getPassword();
+    if (!authParameters.PASSWORD) {
+      callback.onFailure(new Error('PASSWORD parameter is required'));
+      return;
+    }
+    const authenticationHelper = new AuthenticationHelper(
+      this.pool.getUserPoolId().split('_')[1]);
+    this.getCachedDeviceKeyAndPassword();
+    if (this.deviceKey != null) {
+      authParameters.DEVICE_KEY = this.deviceKey;
+    }
+
+    const jsonReq = {
+      AuthFlow: 'USER_PASSWORD_AUTH',
+      ClientId: this.pool.getClientId(),
+      AuthParameters: authParameters,
+      ClientMetadata: authDetails.getValidationData(),
+    };
+    if (this.getUserContextData(this.username)) {
+      jsonReq.UserContextData = this.getUserContextData(this.username);
+    }
+    // USER_PASSWORD_AUTH happens in a single round-trip: client sends userName and password,
+    // Cognito UserPools verifies password and returns tokens.
+    this.client.request('InitiateAuth', jsonReq, (err, authResult) => {
+      if (err) {
+        return callback.onFailure(err);
+      }
+      return this.authenticateUserInternal(authResult, authenticationHelper, callback);
+    });
+  }
+
+  /**
   * PRIVATE ONLY: This is an internal only method and should not
   * be directly called by the consumers.
   * @param {object} dataAuthenticate authentication data
@@ -398,19 +474,19 @@ export default class CognitoUser {
       }
 
       const deviceSecretVerifierConfig = {
-        Salt: new util.Buffer(
-            authenticationHelper.getSaltDevices(), 'hex'
-          ).toString('base64'),
-        PasswordVerifier: new util.Buffer(
-            authenticationHelper.getVerifierDevices(), 'hex'
-          ).toString('base64'),
+        Salt: Buffer.from(
+          authenticationHelper.getSaltDevices(), 'hex'
+        ).toString('base64'),
+        PasswordVerifier: Buffer.from(
+          authenticationHelper.getVerifierDevices(), 'hex'
+        ).toString('base64'),
       };
 
       this.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
       this.deviceGroupKey = newDeviceMetadata.DeviceGroupKey;
       this.randomPassword = authenticationHelper.getRandomPassword();
 
-      this.client.makeUnauthenticatedRequest('confirmDevice', {
+      this.client.request('ConfirmDevice', {
         DeviceKey: newDeviceMetadata.DeviceKey,
         AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
         DeviceSecretVerifierConfig: deviceSecretVerifierConfig,
@@ -475,7 +551,7 @@ export default class CognitoUser {
       jsonReq.UserContextData = this.getUserContextData();
     }
 
-    this.client.makeUnauthenticatedRequest('respondToAuthChallenge',
+    this.client.request('RespondToAuthChallenge',
         jsonReq, (errAuthenticate, dataAuthenticate) => {
           if (errAuthenticate) {
             return callback.onFailure(errAuthenticate);
@@ -520,7 +596,7 @@ export default class CognitoUser {
       if (this.getUserContextData()) {
         jsonReq.UserContextData = this.getUserContextData();
       }
-      this.client.makeUnauthenticatedRequest('respondToAuthChallenge', jsonReq, (err, data) => {
+      this.client.request('RespondToAuthChallenge', jsonReq, (err, data) => {
         if (err) {
           return callback.onFailure(err);
         }
@@ -543,12 +619,14 @@ export default class CognitoUser {
 
             const dateNow = dateHelper.getNowString();
 
-            const signatureString = util.crypto.hmac(hkdf, util.buffer.concat([
-              new util.Buffer(this.deviceGroupKey, 'utf8'),
-              new util.Buffer(this.deviceKey, 'utf8'),
-              new util.Buffer(challengeParameters.SECRET_BLOCK, 'base64'),
-              new util.Buffer(dateNow, 'utf8'),
-            ]), 'base64', 'sha256');
+            const signatureString = createHmac('sha256', hkdf)
+            .update(Buffer.concat([
+              Buffer.from(this.deviceGroupKey, 'utf8'),
+              Buffer.from(this.deviceKey, 'utf8'),
+              Buffer.from(challengeParameters.SECRET_BLOCK, 'base64'),
+              Buffer.from(dateNow, 'utf8'),
+            ]))
+            .digest('base64');
 
             const challengeResponses = {};
 
@@ -568,7 +646,7 @@ export default class CognitoUser {
               jsonReqResp.UserContextData = this.getUserContextData();
             }
 
-            this.client.makeUnauthenticatedRequest('respondToAuthChallenge',
+            this.client.request('RespondToAuthChallenge',
                 jsonReqResp, (errAuthenticate, dataAuthenticate) => {
                   if (errAuthenticate) {
                     return callback.onFailure(errAuthenticate);
@@ -607,7 +685,7 @@ export default class CognitoUser {
     if (this.getUserContextData()) {
       jsonReq.UserContextData = this.getUserContextData();
     }
-    this.client.makeUnauthenticatedRequest('confirmSignUp', jsonReq, err => {
+    this.client.request('ConfirmSignUp', jsonReq, err => {
       if (err) {
         return callback(err, null);
       }
@@ -631,7 +709,8 @@ export default class CognitoUser {
     challengeResponses.ANSWER = answerChallenge;
 
     const authenticationHelper = new AuthenticationHelper(
-      this.pool.getUserPoolId().split('_')[1]);
+      this.pool.getUserPoolId().split('_')[1]
+    );
     this.getCachedDeviceKeyAndPassword();
     if (this.deviceKey != null) {
       challengeResponses.DEVICE_KEY = this.deviceKey;
@@ -646,7 +725,7 @@ export default class CognitoUser {
     if (this.getUserContextData()) {
       jsonReq.UserContextData = this.getUserContextData();
     }
-    this.client.makeUnauthenticatedRequest('respondToAuthChallenge', jsonReq, (err, data) => {
+    this.client.request('RespondToAuthChallenge', jsonReq, (err, data) => {
       if (err) {
         return callback.onFailure(err);
       }
@@ -687,7 +766,7 @@ export default class CognitoUser {
       jsonReq.UserContextData = this.getUserContextData();
     }
 
-    this.client.makeUnauthenticatedRequest('respondToAuthChallenge',
+    this.client.request('RespondToAuthChallenge',
         jsonReq, (err, dataAuthenticate) => {
           if (err) {
             return callback.onFailure(err);
@@ -719,12 +798,12 @@ export default class CognitoUser {
               }
 
               const deviceSecretVerifierConfig = {
-                Salt: new util.Buffer(
-                    authenticationHelper.getSaltDevices(), 'hex'
-                  ).toString('base64'),
-                PasswordVerifier: new util.Buffer(
-                    authenticationHelper.getVerifierDevices(), 'hex'
-                  ).toString('base64'),
+                Salt: Buffer.from(
+                  authenticationHelper.getSaltDevices(), 'hex'
+                ).toString('base64'),
+                PasswordVerifier: Buffer.from(
+                  authenticationHelper.getVerifierDevices(), 'hex'
+                ).toString('base64'),
               };
 
               this.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
@@ -732,7 +811,7 @@ export default class CognitoUser {
                 .NewDeviceMetadata.DeviceGroupKey;
               this.randomPassword = authenticationHelper.getRandomPassword();
 
-              this.client.makeUnauthenticatedRequest('confirmDevice', {
+              this.client.request('ConfirmDevice', {
                 DeviceKey: dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey,
                 AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
                 DeviceSecretVerifierConfig: deviceSecretVerifierConfig,
@@ -769,7 +848,7 @@ export default class CognitoUser {
       return callback(new Error('User is not authenticated'), null);
     }
 
-    this.client.makeUnauthenticatedRequest('changePassword', {
+    this.client.request('ChangePassword', {
       PreviousPassword: oldUserPassword,
       ProposedPassword: newUserPassword,
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
@@ -799,7 +878,7 @@ export default class CognitoUser {
     };
     mfaOptions.push(mfaEnabled);
 
-    this.client.makeUnauthenticatedRequest('setUserSettings', {
+    this.client.request('SetUserSettings', {
       MFAOptions: mfaOptions,
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
     }, err => {
@@ -823,7 +902,7 @@ export default class CognitoUser {
       return callback(new Error('User is not authenticated'), null);
     }
 
-    this.client.makeUnauthenticatedRequest('setUserMFAPreference', {
+    this.client.request('SetUserMFAPreference', {
       SMSMfaSettings: smsMfaSettings,
       SoftwareTokenMfaSettings: softwareTokenMfaSettings,
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
@@ -848,7 +927,7 @@ export default class CognitoUser {
 
     const mfaOptions = [];
 
-    this.client.makeUnauthenticatedRequest('setUserSettings', {
+    this.client.request('SetUserSettings', {
       MFAOptions: mfaOptions,
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
     }, err => {
@@ -871,7 +950,7 @@ export default class CognitoUser {
       return callback(new Error('User is not authenticated'), null);
     }
 
-    this.client.makeUnauthenticatedRequest('deleteUser', {
+    this.client.request('DeleteUser', {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
     }, err => {
       if (err) {
@@ -897,7 +976,7 @@ export default class CognitoUser {
       return callback(new Error('User is not authenticated'), null);
     }
 
-    this.client.makeUnauthenticatedRequest('updateUserAttributes', {
+    this.client.request('UpdateUserAttributes', {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
       UserAttributes: attributes,
     }, err => {
@@ -919,7 +998,7 @@ export default class CognitoUser {
       return callback(new Error('User is not authenticated'), null);
     }
 
-    this.client.makeUnauthenticatedRequest('getUser', {
+    this.client.request('GetUser', {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
     }, (err, userData) => {
       if (err) {
@@ -952,7 +1031,7 @@ export default class CognitoUser {
       return callback(new Error('User is not authenticated'), null);
     }
 
-    this.client.makeUnauthenticatedRequest('getUser', {
+    this.client.request('GetUser', {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
     }, (err, userData) => {
       if (err) {
@@ -960,6 +1039,28 @@ export default class CognitoUser {
       }
 
       return callback(null, userData.MFAOptions);
+    });
+    return undefined;
+  }
+
+  /**
+   * This is used by an authenticated users to get the userData
+   * @param {nodeCallback<UserData>} callback Called on success or error.
+   * @returns {void}
+   */
+  getUserData(callback) {
+    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
+      return callback(new Error('User is not authenticated'), null);
+    }
+
+    this.client.request('GetUser', {
+      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
+    }, (err, userData) => {
+      if (err) {
+        return callback(err, null);
+      }
+
+      return callback(null, userData);
     });
     return undefined;
   }
@@ -975,7 +1076,7 @@ export default class CognitoUser {
       return callback(new Error('User is not authenticated'), null);
     }
 
-    this.client.makeUnauthenticatedRequest('deleteUserAttributes', {
+    this.client.request('DeleteUserAttributes', {
       UserAttributeNames: attributeList,
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
     }, err => {
@@ -998,7 +1099,7 @@ export default class CognitoUser {
       Username: this.username,
     };
 
-    this.client.makeUnauthenticatedRequest('resendConfirmationCode', jsonReq, (err, result) => {
+    this.client.request('ResendConfirmationCode', jsonReq, (err, result) => {
       if (err) {
         return callback(err, null);
       }
@@ -1092,7 +1193,7 @@ export default class CognitoUser {
     if (this.getUserContextData()) {
       jsonReq.UserContextData = this.getUserContextData();
     }
-    this.client.makeUnauthenticatedRequest('initiateAuth', jsonReq, (err, authResult) => {
+    this.client.request('InitiateAuth', jsonReq, (err, authResult) => {
       if (err) {
         if (err.code === 'NotAuthorizedException') {
           this.clearCachedTokens();
@@ -1232,7 +1333,7 @@ export default class CognitoUser {
     if (this.getUserContextData()) {
       jsonReq.UserContextData = this.getUserContextData();
     }
-    this.client.makeUnauthenticatedRequest('forgotPassword', jsonReq, (err, data) => {
+    this.client.request('ForgotPassword', jsonReq, (err, data) => {
       if (err) {
         return callback.onFailure(err);
       }
@@ -1262,7 +1363,7 @@ export default class CognitoUser {
     if (this.getUserContextData()) {
       jsonReq.UserContextData = this.getUserContextData();
     }
-    this.client.makeUnauthenticatedRequest('confirmForgotPassword', jsonReq, err => {
+    this.client.request('ConfirmForgotPassword', jsonReq, err => {
       if (err) {
         return callback.onFailure(err);
       }
@@ -1283,7 +1384,7 @@ export default class CognitoUser {
       return callback.onFailure(new Error('User is not authenticated'));
     }
 
-    this.client.makeUnauthenticatedRequest('getUserAttributeVerificationCode', {
+    this.client.request('GetUserAttributeVerificationCode', {
       AttributeName: attributeName,
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
     }, (err, data) => {
@@ -1312,7 +1413,7 @@ export default class CognitoUser {
       return callback.onFailure(new Error('User is not authenticated'));
     }
 
-    this.client.makeUnauthenticatedRequest('verifyUserAttribute', {
+    this.client.request('VerifyUserAttribute', {
       AttributeName: attributeName,
       Code: confirmationCode,
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
@@ -1337,7 +1438,7 @@ export default class CognitoUser {
       return callback.onFailure(new Error('User is not authenticated'));
     }
 
-    this.client.makeUnauthenticatedRequest('getDevice', {
+    this.client.request('GetDevice', {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
       DeviceKey: this.deviceKey,
     }, (err, data) => {
@@ -1362,7 +1463,7 @@ export default class CognitoUser {
       return callback.onFailure(new Error('User is not authenticated'));
     }
 
-    this.client.makeUnauthenticatedRequest('forgetDevice', {
+    this.client.request('ForgetDevice', {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
       DeviceKey: deviceKey,
     }, err => {
@@ -1406,7 +1507,7 @@ export default class CognitoUser {
       return callback.onFailure(new Error('User is not authenticated'));
     }
 
-    this.client.makeUnauthenticatedRequest('updateDeviceStatus', {
+    this.client.request('UpdateDeviceStatus', {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
       DeviceKey: this.deviceKey,
       DeviceRememberedStatus: 'remembered',
@@ -1431,7 +1532,7 @@ export default class CognitoUser {
       return callback.onFailure(new Error('User is not authenticated'));
     }
 
-    this.client.makeUnauthenticatedRequest('updateDeviceStatus', {
+    this.client.request('UpdateDeviceStatus', {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
       DeviceKey: this.deviceKey,
       DeviceRememberedStatus: 'not_remembered',
@@ -1459,7 +1560,7 @@ export default class CognitoUser {
       return callback.onFailure(new Error('User is not authenticated'));
     }
 
-    this.client.makeUnauthenticatedRequest('listDevices', {
+    this.client.request('ListDevices', {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
       Limit: limit,
       PaginationToken: paginationToken,
@@ -1484,7 +1585,7 @@ export default class CognitoUser {
       return callback.onFailure(new Error('User is not authenticated'));
     }
 
-    this.client.makeUnauthenticatedRequest('globalSignOut', {
+    this.client.request('GlobalSignOut', {
       AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
     }, err => {
       if (err) {
@@ -1525,7 +1626,7 @@ export default class CognitoUser {
     if (this.getUserContextData()) {
       jsonReq.UserContextData = this.getUserContextData();
     }
-    this.client.makeUnauthenticatedRequest('respondToAuthChallenge', jsonReq, (err, data) => {
+    this.client.request('RespondToAuthChallenge', jsonReq, (err, data) => {
       if (err) {
         return callback.onFailure(err);
       }
@@ -1556,7 +1657,7 @@ export default class CognitoUser {
    */
   associateSoftwareToken(callback) {
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-      this.client.makeUnauthenticatedRequest('associateSoftwareToken', {
+      this.client.request('AssociateSoftwareToken', {
         Session: this.Session,
       }, (err, data) => {
         if (err) {
@@ -1566,7 +1667,7 @@ export default class CognitoUser {
         return callback.associateSecretCode(data.SecretCode);
       });
     } else {
-      this.client.makeUnauthenticatedRequest('associateSoftwareToken', {
+      this.client.request('AssociateSoftwareToken', {
         AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
       }, (err, data) => {
         if (err) {
@@ -1578,7 +1679,7 @@ export default class CognitoUser {
   }
 
   /**
-   * This is used by an authenticated or a user trying to authenticate to associate a TOTP MFA
+   * This is used by an authenticated or a user trying to authenticate to verify a TOTP MFA
    * @param {string} totpCode The MFA code entered by the user.
    * @param {string} friendlyDeviceName The device name we are assigning to the device.
    * @param {nodeCallback<string>} callback Called on success or error.
@@ -1586,7 +1687,7 @@ export default class CognitoUser {
    */
   verifySoftwareToken(totpCode, friendlyDeviceName, callback) {
     if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-      this.client.makeUnauthenticatedRequest('verifySoftwareToken', {
+      this.client.request('VerifySoftwareToken', {
         Session: this.Session,
         UserCode: totpCode,
         FriendlyDeviceName: friendlyDeviceName,
@@ -1606,7 +1707,7 @@ export default class CognitoUser {
         if (this.getUserContextData()) {
           jsonReq.UserContextData = this.getUserContextData();
         }
-        this.client.makeUnauthenticatedRequest('respondToAuthChallenge',
+        this.client.request('RespondToAuthChallenge',
             jsonReq, (errRespond, dataRespond) => {
               if (errRespond) {
                 return callback.onFailure(errRespond);
@@ -1618,7 +1719,7 @@ export default class CognitoUser {
         return undefined;
       });
     } else {
-      this.client.makeUnauthenticatedRequest('verifySoftwareToken', {
+      this.client.request('VerifySoftwareToken', {
         AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
         UserCode: totpCode,
         FriendlyDeviceName: friendlyDeviceName,

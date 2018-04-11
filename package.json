@@ -1,7 +1,7 @@
 {
   "name": "amazon-cognito-identity-js",
   "description": "Amazon Cognito Identity Provider JavaScript SDK",
-  "version": "1.31.0",
+  "version": "2.0.2",
   "author": {
     "name": "Amazon Web Services",
     "email": "aws@amazon.com",
@@ -18,14 +18,15 @@
     "Paul Watts",
     "Gleb Promokhov",
     "Min Bi",
+    "Michael Labieniec",
     "Chetan Mehta <chetam@amazon.com>",
     "Ionut Trestian <trestian@amazon.com>"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/aws/amazon-cognito-identity-js.git"
+    "url": "https://github.com/aws/aws-amplify.git"
   },
-  "license": "SEE LICENSE IN LICENSE.txt",
+  "license": "See LICENSE",
   "licenses": [
     {
       "type": "Amazon Software License",
@@ -49,6 +50,7 @@
     "build": "npm run clean && npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
     "doc": "jsdoc src -d docs",
     "lint": "eslint src",
+    "test": "eslint src",
     "lint2": "eslint enhance-rn.js"
   },
   "main": "lib/index.js",
@@ -60,7 +62,8 @@
   "jsnext:main": "es/index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "aws-sdk": "2.177.0",
+    "buffer": "4.9.1",
+    "crypto-browserify": "1.0.9",
     "js-cookie": "^2.1.4"
   },
   "devDependencies": {
@@ -69,6 +72,8 @@
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
     "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
     "cross-env": "^3.1.4",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^5.0.2",
@@ -78,7 +83,7 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
     "jsdoc": "^3.4.0",
-    "react": "^16.0.0-alpha.6",
+    "react": "^16.0.0",
     "react-native": "^0.44.0",
     "rimraf": "^2.5.4",
     "webpack": "^1.13.1"

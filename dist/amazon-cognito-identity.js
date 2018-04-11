@@ -18,14 +18,14 @@
 
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("aws-sdk/global"), require("aws-sdk/clients/cognitoidentityserviceprovider"));
+		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define(["aws-sdk/global", "aws-sdk/clients/cognitoidentityserviceprovider"], factory);
+		define([], factory);
 	else if(typeof exports === 'object')
-		exports["AmazonCognitoIdentity"] = factory(require("aws-sdk/global"), require("aws-sdk/clients/cognitoidentityserviceprovider"));
+		exports["AmazonCognitoIdentity"] = factory();
 	else
-		root["AmazonCognitoIdentity"] = factory(root["AWSCognito"], root["AWSCognito"]["CognitoIdentityServiceProvider"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_13__) {
+		root["AmazonCognitoIdentity"] = factory();
+})(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -76,53 +76,1965 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.__esModule = true;
 
-	var _src = __webpack_require__(17);
+	var _AuthenticationDetails = __webpack_require__(19);
 
-	Object.keys(_src).forEach(function (key) {
-	  if (key === "default" || key === "__esModule") return;
-	  Object.defineProperty(exports, key, {
-	    enumerable: true,
-	    get: function get() {
-	      return _src[key];
-	    }
-	  });
+	Object.defineProperty(exports, 'AuthenticationDetails', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_AuthenticationDetails).default;
+	  }
 	});
 
-	var _cognitoidentityserviceprovider = __webpack_require__(13);
+	var _AuthenticationHelper = __webpack_require__(3);
 
-	var _cognitoidentityserviceprovider2 = _interopRequireDefault(_cognitoidentityserviceprovider);
+	Object.defineProperty(exports, 'AuthenticationHelper', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_AuthenticationHelper).default;
+	  }
+	});
 
-	var enhancements = _interopRequireWildcard(_src);
+	var _CognitoAccessToken = __webpack_require__(5);
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	Object.defineProperty(exports, 'CognitoAccessToken', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_CognitoAccessToken).default;
+	  }
+	});
+
+	var _CognitoIdToken = __webpack_require__(6);
+
+	Object.defineProperty(exports, 'CognitoIdToken', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_CognitoIdToken).default;
+	  }
+	});
+
+	var _CognitoRefreshToken = __webpack_require__(8);
+
+	Object.defineProperty(exports, 'CognitoRefreshToken', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_CognitoRefreshToken).default;
+	  }
+	});
+
+	var _CognitoUser = __webpack_require__(9);
+
+	Object.defineProperty(exports, 'CognitoUser', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_CognitoUser).default;
+	  }
+	});
+
+	var _CognitoUserAttribute = __webpack_require__(10);
+
+	Object.defineProperty(exports, 'CognitoUserAttribute', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_CognitoUserAttribute).default;
+	  }
+	});
+
+	var _CognitoUserPool = __webpack_require__(21);
+
+	Object.defineProperty(exports, 'CognitoUserPool', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_CognitoUserPool).default;
+	  }
+	});
+
+	var _CognitoUserSession = __webpack_require__(11);
+
+	Object.defineProperty(exports, 'CognitoUserSession', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_CognitoUserSession).default;
+	  }
+	});
+
+	var _CookieStorage = __webpack_require__(22);
+
+	Object.defineProperty(exports, 'CookieStorage', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_CookieStorage).default;
+	  }
+	});
+
+	var _DateHelper = __webpack_require__(12);
+
+	Object.defineProperty(exports, 'DateHelper', {
+	  enumerable: true,
+	  get: function get() {
+	    return _interopRequireDefault(_DateHelper).default;
+	  }
+	});
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	Object.keys(enhancements).forEach(function (key) {
-	  _cognitoidentityserviceprovider2.default[key] = enhancements[key];
-	});
-
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_1__;
+	/* WEBPACK VAR INJECTION */(function(global) {/*!
+	 * The buffer module from node.js, for the browser.
+	 *
+	 * @author   Feross Aboukhadijeh <feross@feross.org> <http://feross.org>
+	 * @license  MIT
+	 */
+	/* eslint-disable no-proto */
+
+	'use strict'
+
+	var base64 = __webpack_require__(15)
+	var ieee754 = __webpack_require__(16)
+	var isArray = __webpack_require__(17)
+
+	exports.Buffer = Buffer
+	exports.SlowBuffer = SlowBuffer
+	exports.INSPECT_MAX_BYTES = 50
+
+	/**
+	 * If `Buffer.TYPED_ARRAY_SUPPORT`:
+	 *   === true    Use Uint8Array implementation (fastest)
+	 *   === false   Use Object implementation (most compatible, even IE6)
+	 *
+	 * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
+	 * Opera 11.6+, iOS 4.2+.
+	 *
+	 * Due to various browser bugs, sometimes the Object implementation will be used even
+	 * when the browser supports typed arrays.
+	 *
+	 * Note:
+	 *
+	 *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
+	 *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
+	 *
+	 *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
+	 *
+	 *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
+	 *     incorrect length in some situations.
+
+	 * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
+	 * get the Object implementation, which is slower but behaves correctly.
+	 */
+	Buffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined
+	  ? global.TYPED_ARRAY_SUPPORT
+	  : typedArraySupport()
+
+	/*
+	 * Export kMaxLength after typed array support is determined.
+	 */
+	exports.kMaxLength = kMaxLength()
+
+	function typedArraySupport () {
+	  try {
+	    var arr = new Uint8Array(1)
+	    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
+	    return arr.foo() === 42 && // typed array instances can be augmented
+	        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
+	        arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
+	  } catch (e) {
+	    return false
+	  }
+	}
+
+	function kMaxLength () {
+	  return Buffer.TYPED_ARRAY_SUPPORT
+	    ? 0x7fffffff
+	    : 0x3fffffff
+	}
+
+	function createBuffer (that, length) {
+	  if (kMaxLength() < length) {
+	    throw new RangeError('Invalid typed array length')
+	  }
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    // Return an augmented `Uint8Array` instance, for best performance
+	    that = new Uint8Array(length)
+	    that.__proto__ = Buffer.prototype
+	  } else {
+	    // Fallback: Return an object instance of the Buffer class
+	    if (that === null) {
+	      that = new Buffer(length)
+	    }
+	    that.length = length
+	  }
+
+	  return that
+	}
+
+	/**
+	 * The Buffer constructor returns instances of `Uint8Array` that have their
+	 * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
+	 * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
+	 * and the `Uint8Array` methods. Square bracket notation works as expected -- it
+	 * returns a single octet.
+	 *
+	 * The `Uint8Array` prototype remains unmodified.
+	 */
+
+	function Buffer (arg, encodingOrOffset, length) {
+	  if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
+	    return new Buffer(arg, encodingOrOffset, length)
+	  }
+
+	  // Common case.
+	  if (typeof arg === 'number') {
+	    if (typeof encodingOrOffset === 'string') {
+	      throw new Error(
+	        'If encoding is specified then the first argument must be a string'
+	      )
+	    }
+	    return allocUnsafe(this, arg)
+	  }
+	  return from(this, arg, encodingOrOffset, length)
+	}
+
+	Buffer.poolSize = 8192 // not used by this implementation
+
+	// TODO: Legacy, not needed anymore. Remove in next major version.
+	Buffer._augment = function (arr) {
+	  arr.__proto__ = Buffer.prototype
+	  return arr
+	}
+
+	function from (that, value, encodingOrOffset, length) {
+	  if (typeof value === 'number') {
+	    throw new TypeError('"value" argument must not be a number')
+	  }
+
+	  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
+	    return fromArrayBuffer(that, value, encodingOrOffset, length)
+	  }
+
+	  if (typeof value === 'string') {
+	    return fromString(that, value, encodingOrOffset)
+	  }
+
+	  return fromObject(that, value)
+	}
+
+	/**
+	 * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
+	 * if value is a number.
+	 * Buffer.from(str[, encoding])
+	 * Buffer.from(array)
+	 * Buffer.from(buffer)
+	 * Buffer.from(arrayBuffer[, byteOffset[, length]])
+	 **/
+	Buffer.from = function (value, encodingOrOffset, length) {
+	  return from(null, value, encodingOrOffset, length)
+	}
+
+	if (Buffer.TYPED_ARRAY_SUPPORT) {
+	  Buffer.prototype.__proto__ = Uint8Array.prototype
+	  Buffer.__proto__ = Uint8Array
+	  if (typeof Symbol !== 'undefined' && Symbol.species &&
+	      Buffer[Symbol.species] === Buffer) {
+	    // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97
+	    Object.defineProperty(Buffer, Symbol.species, {
+	      value: null,
+	      configurable: true
+	    })
+	  }
+	}
+
+	function assertSize (size) {
+	  if (typeof size !== 'number') {
+	    throw new TypeError('"size" argument must be a number')
+	  } else if (size < 0) {
+	    throw new RangeError('"size" argument must not be negative')
+	  }
+	}
+
+	function alloc (that, size, fill, encoding) {
+	  assertSize(size)
+	  if (size <= 0) {
+	    return createBuffer(that, size)
+	  }
+	  if (fill !== undefined) {
+	    // Only pay attention to encoding if it's a string. This
+	    // prevents accidentally sending in a number that would
+	    // be interpretted as a start offset.
+	    return typeof encoding === 'string'
+	      ? createBuffer(that, size).fill(fill, encoding)
+	      : createBuffer(that, size).fill(fill)
+	  }
+	  return createBuffer(that, size)
+	}
+
+	/**
+	 * Creates a new filled Buffer instance.
+	 * alloc(size[, fill[, encoding]])
+	 **/
+	Buffer.alloc = function (size, fill, encoding) {
+	  return alloc(null, size, fill, encoding)
+	}
+
+	function allocUnsafe (that, size) {
+	  assertSize(size)
+	  that = createBuffer(that, size < 0 ? 0 : checked(size) | 0)
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) {
+	    for (var i = 0; i < size; ++i) {
+	      that[i] = 0
+	    }
+	  }
+	  return that
+	}
+
+	/**
+	 * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
+	 * */
+	Buffer.allocUnsafe = function (size) {
+	  return allocUnsafe(null, size)
+	}
+	/**
+	 * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
+	 */
+	Buffer.allocUnsafeSlow = function (size) {
+	  return allocUnsafe(null, size)
+	}
+
+	function fromString (that, string, encoding) {
+	  if (typeof encoding !== 'string' || encoding === '') {
+	    encoding = 'utf8'
+	  }
+
+	  if (!Buffer.isEncoding(encoding)) {
+	    throw new TypeError('"encoding" must be a valid string encoding')
+	  }
+
+	  var length = byteLength(string, encoding) | 0
+	  that = createBuffer(that, length)
+
+	  var actual = that.write(string, encoding)
+
+	  if (actual !== length) {
+	    // Writing a hex string, for example, that contains invalid characters will
+	    // cause everything after the first invalid character to be ignored. (e.g.
+	    // 'abxxcd' will be treated as 'ab')
+	    that = that.slice(0, actual)
+	  }
+
+	  return that
+	}
+
+	function fromArrayLike (that, array) {
+	  var length = array.length < 0 ? 0 : checked(array.length) | 0
+	  that = createBuffer(that, length)
+	  for (var i = 0; i < length; i += 1) {
+	    that[i] = array[i] & 255
+	  }
+	  return that
+	}
+
+	function fromArrayBuffer (that, array, byteOffset, length) {
+	  array.byteLength // this throws if `array` is not a valid ArrayBuffer
+
+	  if (byteOffset < 0 || array.byteLength < byteOffset) {
+	    throw new RangeError('\'offset\' is out of bounds')
+	  }
+
+	  if (array.byteLength < byteOffset + (length || 0)) {
+	    throw new RangeError('\'length\' is out of bounds')
+	  }
+
+	  if (byteOffset === undefined && length === undefined) {
+	    array = new Uint8Array(array)
+	  } else if (length === undefined) {
+	    array = new Uint8Array(array, byteOffset)
+	  } else {
+	    array = new Uint8Array(array, byteOffset, length)
+	  }
+
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    // Return an augmented `Uint8Array` instance, for best performance
+	    that = array
+	    that.__proto__ = Buffer.prototype
+	  } else {
+	    // Fallback: Return an object instance of the Buffer class
+	    that = fromArrayLike(that, array)
+	  }
+	  return that
+	}
+
+	function fromObject (that, obj) {
+	  if (Buffer.isBuffer(obj)) {
+	    var len = checked(obj.length) | 0
+	    that = createBuffer(that, len)
+
+	    if (that.length === 0) {
+	      return that
+	    }
+
+	    obj.copy(that, 0, 0, len)
+	    return that
+	  }
+
+	  if (obj) {
+	    if ((typeof ArrayBuffer !== 'undefined' &&
+	        obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
+	      if (typeof obj.length !== 'number' || isnan(obj.length)) {
+	        return createBuffer(that, 0)
+	      }
+	      return fromArrayLike(that, obj)
+	    }
+
+	    if (obj.type === 'Buffer' && isArray(obj.data)) {
+	      return fromArrayLike(that, obj.data)
+	    }
+	  }
+
+	  throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
+	}
+
+	function checked (length) {
+	  // Note: cannot use `length < kMaxLength()` here because that fails when
+	  // length is NaN (which is otherwise coerced to zero.)
+	  if (length >= kMaxLength()) {
+	    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
+	                         'size: 0x' + kMaxLength().toString(16) + ' bytes')
+	  }
+	  return length | 0
+	}
+
+	function SlowBuffer (length) {
+	  if (+length != length) { // eslint-disable-line eqeqeq
+	    length = 0
+	  }
+	  return Buffer.alloc(+length)
+	}
+
+	Buffer.isBuffer = function isBuffer (b) {
+	  return !!(b != null && b._isBuffer)
+	}
+
+	Buffer.compare = function compare (a, b) {
+	  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
+	    throw new TypeError('Arguments must be Buffers')
+	  }
+
+	  if (a === b) return 0
+
+	  var x = a.length
+	  var y = b.length
+
+	  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
+	    if (a[i] !== b[i]) {
+	      x = a[i]
+	      y = b[i]
+	      break
+	    }
+	  }
+
+	  if (x < y) return -1
+	  if (y < x) return 1
+	  return 0
+	}
+
+	Buffer.isEncoding = function isEncoding (encoding) {
+	  switch (String(encoding).toLowerCase()) {
+	    case 'hex':
+	    case 'utf8':
+	    case 'utf-8':
+	    case 'ascii':
+	    case 'latin1':
+	    case 'binary':
+	    case 'base64':
+	    case 'ucs2':
+	    case 'ucs-2':
+	    case 'utf16le':
+	    case 'utf-16le':
+	      return true
+	    default:
+	      return false
+	  }
+	}
+
+	Buffer.concat = function concat (list, length) {
+	  if (!isArray(list)) {
+	    throw new TypeError('"list" argument must be an Array of Buffers')
+	  }
+
+	  if (list.length === 0) {
+	    return Buffer.alloc(0)
+	  }
+
+	  var i
+	  if (length === undefined) {
+	    length = 0
+	    for (i = 0; i < list.length; ++i) {
+	      length += list[i].length
+	    }
+	  }
+
+	  var buffer = Buffer.allocUnsafe(length)
+	  var pos = 0
+	  for (i = 0; i < list.length; ++i) {
+	    var buf = list[i]
+	    if (!Buffer.isBuffer(buf)) {
+	      throw new TypeError('"list" argument must be an Array of Buffers')
+	    }
+	    buf.copy(buffer, pos)
+	    pos += buf.length
+	  }
+	  return buffer
+	}
+
+	function byteLength (string, encoding) {
+	  if (Buffer.isBuffer(string)) {
+	    return string.length
+	  }
+	  if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
+	      (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
+	    return string.byteLength
+	  }
+	  if (typeof string !== 'string') {
+	    string = '' + string
+	  }
+
+	  var len = string.length
+	  if (len === 0) return 0
+
+	  // Use a for loop to avoid recursion
+	  var loweredCase = false
+	  for (;;) {
+	    switch (encoding) {
+	      case 'ascii':
+	      case 'latin1':
+	      case 'binary':
+	        return len
+	      case 'utf8':
+	      case 'utf-8':
+	      case undefined:
+	        return utf8ToBytes(string).length
+	      case 'ucs2':
+	      case 'ucs-2':
+	      case 'utf16le':
+	      case 'utf-16le':
+	        return len * 2
+	      case 'hex':
+	        return len >>> 1
+	      case 'base64':
+	        return base64ToBytes(string).length
+	      default:
+	        if (loweredCase) return utf8ToBytes(string).length // assume utf8
+	        encoding = ('' + encoding).toLowerCase()
+	        loweredCase = true
+	    }
+	  }
+	}
+	Buffer.byteLength = byteLength
+
+	function slowToString (encoding, start, end) {
+	  var loweredCase = false
+
+	  // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
+	  // property of a typed array.
+
+	  // This behaves neither like String nor Uint8Array in that we set start/end
+	  // to their upper/lower bounds if the value passed is out of range.
+	  // undefined is handled specially as per ECMA-262 6th Edition,
+	  // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
+	  if (start === undefined || start < 0) {
+	    start = 0
+	  }
+	  // Return early if start > this.length. Done here to prevent potential uint32
+	  // coercion fail below.
+	  if (start > this.length) {
+	    return ''
+	  }
+
+	  if (end === undefined || end > this.length) {
+	    end = this.length
+	  }
+
+	  if (end <= 0) {
+	    return ''
+	  }
+
+	  // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
+	  end >>>= 0
+	  start >>>= 0
+
+	  if (end <= start) {
+	    return ''
+	  }
+
+	  if (!encoding) encoding = 'utf8'
+
+	  while (true) {
+	    switch (encoding) {
+	      case 'hex':
+	        return hexSlice(this, start, end)
+
+	      case 'utf8':
+	      case 'utf-8':
+	        return utf8Slice(this, start, end)
+
+	      case 'ascii':
+	        return asciiSlice(this, start, end)
+
+	      case 'latin1':
+	      case 'binary':
+	        return latin1Slice(this, start, end)
+
+	      case 'base64':
+	        return base64Slice(this, start, end)
+
+	      case 'ucs2':
+	      case 'ucs-2':
+	      case 'utf16le':
+	      case 'utf-16le':
+	        return utf16leSlice(this, start, end)
+
+	      default:
+	        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+	        encoding = (encoding + '').toLowerCase()
+	        loweredCase = true
+	    }
+	  }
+	}
+
+	// The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
+	// Buffer instances.
+	Buffer.prototype._isBuffer = true
+
+	function swap (b, n, m) {
+	  var i = b[n]
+	  b[n] = b[m]
+	  b[m] = i
+	}
+
+	Buffer.prototype.swap16 = function swap16 () {
+	  var len = this.length
+	  if (len % 2 !== 0) {
+	    throw new RangeError('Buffer size must be a multiple of 16-bits')
+	  }
+	  for (var i = 0; i < len; i += 2) {
+	    swap(this, i, i + 1)
+	  }
+	  return this
+	}
+
+	Buffer.prototype.swap32 = function swap32 () {
+	  var len = this.length
+	  if (len % 4 !== 0) {
+	    throw new RangeError('Buffer size must be a multiple of 32-bits')
+	  }
+	  for (var i = 0; i < len; i += 4) {
+	    swap(this, i, i + 3)
+	    swap(this, i + 1, i + 2)
+	  }
+	  return this
+	}
+
+	Buffer.prototype.swap64 = function swap64 () {
+	  var len = this.length
+	  if (len % 8 !== 0) {
+	    throw new RangeError('Buffer size must be a multiple of 64-bits')
+	  }
+	  for (var i = 0; i < len; i += 8) {
+	    swap(this, i, i + 7)
+	    swap(this, i + 1, i + 6)
+	    swap(this, i + 2, i + 5)
+	    swap(this, i + 3, i + 4)
+	  }
+	  return this
+	}
+
+	Buffer.prototype.toString = function toString () {
+	  var length = this.length | 0
+	  if (length === 0) return ''
+	  if (arguments.length === 0) return utf8Slice(this, 0, length)
+	  return slowToString.apply(this, arguments)
+	}
+
+	Buffer.prototype.equals = function equals (b) {
+	  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
+	  if (this === b) return true
+	  return Buffer.compare(this, b) === 0
+	}
+
+	Buffer.prototype.inspect = function inspect () {
+	  var str = ''
+	  var max = exports.INSPECT_MAX_BYTES
+	  if (this.length > 0) {
+	    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
+	    if (this.length > max) str += ' ... '
+	  }
+	  return '<Buffer ' + str + '>'
+	}
+
+	Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
+	  if (!Buffer.isBuffer(target)) {
+	    throw new TypeError('Argument must be a Buffer')
+	  }
+
+	  if (start === undefined) {
+	    start = 0
+	  }
+	  if (end === undefined) {
+	    end = target ? target.length : 0
+	  }
+	  if (thisStart === undefined) {
+	    thisStart = 0
+	  }
+	  if (thisEnd === undefined) {
+	    thisEnd = this.length
+	  }
+
+	  if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
+	    throw new RangeError('out of range index')
+	  }
+
+	  if (thisStart >= thisEnd && start >= end) {
+	    return 0
+	  }
+	  if (thisStart >= thisEnd) {
+	    return -1
+	  }
+	  if (start >= end) {
+	    return 1
+	  }
+
+	  start >>>= 0
+	  end >>>= 0
+	  thisStart >>>= 0
+	  thisEnd >>>= 0
+
+	  if (this === target) return 0
+
+	  var x = thisEnd - thisStart
+	  var y = end - start
+	  var len = Math.min(x, y)
+
+	  var thisCopy = this.slice(thisStart, thisEnd)
+	  var targetCopy = target.slice(start, end)
+
+	  for (var i = 0; i < len; ++i) {
+	    if (thisCopy[i] !== targetCopy[i]) {
+	      x = thisCopy[i]
+	      y = targetCopy[i]
+	      break
+	    }
+	  }
+
+	  if (x < y) return -1
+	  if (y < x) return 1
+	  return 0
+	}
+
+	// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
+	// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
+	//
+	// Arguments:
+	// - buffer - a Buffer to search
+	// - val - a string, Buffer, or number
+	// - byteOffset - an index into `buffer`; will be clamped to an int32
+	// - encoding - an optional encoding, relevant is val is a string
+	// - dir - true for indexOf, false for lastIndexOf
+	function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
+	  // Empty buffer means no match
+	  if (buffer.length === 0) return -1
+
+	  // Normalize byteOffset
+	  if (typeof byteOffset === 'string') {
+	    encoding = byteOffset
+	    byteOffset = 0
+	  } else if (byteOffset > 0x7fffffff) {
+	    byteOffset = 0x7fffffff
+	  } else if (byteOffset < -0x80000000) {
+	    byteOffset = -0x80000000
+	  }
+	  byteOffset = +byteOffset  // Coerce to Number.
+	  if (isNaN(byteOffset)) {
+	    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
+	    byteOffset = dir ? 0 : (buffer.length - 1)
+	  }
+
+	  // Normalize byteOffset: negative offsets start from the end of the buffer
+	  if (byteOffset < 0) byteOffset = buffer.length + byteOffset
+	  if (byteOffset >= buffer.length) {
+	    if (dir) return -1
+	    else byteOffset = buffer.length - 1
+	  } else if (byteOffset < 0) {
+	    if (dir) byteOffset = 0
+	    else return -1
+	  }
+
+	  // Normalize val
+	  if (typeof val === 'string') {
+	    val = Buffer.from(val, encoding)
+	  }
+
+	  // Finally, search either indexOf (if dir is true) or lastIndexOf
+	  if (Buffer.isBuffer(val)) {
+	    // Special case: looking for empty string/buffer always fails
+	    if (val.length === 0) {
+	      return -1
+	    }
+	    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
+	  } else if (typeof val === 'number') {
+	    val = val & 0xFF // Search for a byte value [0-255]
+	    if (Buffer.TYPED_ARRAY_SUPPORT &&
+	        typeof Uint8Array.prototype.indexOf === 'function') {
+	      if (dir) {
+	        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
+	      } else {
+	        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
+	      }
+	    }
+	    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
+	  }
+
+	  throw new TypeError('val must be string, number or Buffer')
+	}
+
+	function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
+	  var indexSize = 1
+	  var arrLength = arr.length
+	  var valLength = val.length
+
+	  if (encoding !== undefined) {
+	    encoding = String(encoding).toLowerCase()
+	    if (encoding === 'ucs2' || encoding === 'ucs-2' ||
+	        encoding === 'utf16le' || encoding === 'utf-16le') {
+	      if (arr.length < 2 || val.length < 2) {
+	        return -1
+	      }
+	      indexSize = 2
+	      arrLength /= 2
+	      valLength /= 2
+	      byteOffset /= 2
+	    }
+	  }
+
+	  function read (buf, i) {
+	    if (indexSize === 1) {
+	      return buf[i]
+	    } else {
+	      return buf.readUInt16BE(i * indexSize)
+	    }
+	  }
+
+	  var i
+	  if (dir) {
+	    var foundIndex = -1
+	    for (i = byteOffset; i < arrLength; i++) {
+	      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
+	        if (foundIndex === -1) foundIndex = i
+	        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
+	      } else {
+	        if (foundIndex !== -1) i -= i - foundIndex
+	        foundIndex = -1
+	      }
+	    }
+	  } else {
+	    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength
+	    for (i = byteOffset; i >= 0; i--) {
+	      var found = true
+	      for (var j = 0; j < valLength; j++) {
+	        if (read(arr, i + j) !== read(val, j)) {
+	          found = false
+	          break
+	        }
+	      }
+	      if (found) return i
+	    }
+	  }
+
+	  return -1
+	}
+
+	Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
+	  return this.indexOf(val, byteOffset, encoding) !== -1
+	}
+
+	Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
+	  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
+	}
+
+	Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
+	  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
+	}
+
+	function hexWrite (buf, string, offset, length) {
+	  offset = Number(offset) || 0
+	  var remaining = buf.length - offset
+	  if (!length) {
+	    length = remaining
+	  } else {
+	    length = Number(length)
+	    if (length > remaining) {
+	      length = remaining
+	    }
+	  }
+
+	  // must be an even number of digits
+	  var strLen = string.length
+	  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
+
+	  if (length > strLen / 2) {
+	    length = strLen / 2
+	  }
+	  for (var i = 0; i < length; ++i) {
+	    var parsed = parseInt(string.substr(i * 2, 2), 16)
+	    if (isNaN(parsed)) return i
+	    buf[offset + i] = parsed
+	  }
+	  return i
+	}
+
+	function utf8Write (buf, string, offset, length) {
+	  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
+	}
+
+	function asciiWrite (buf, string, offset, length) {
+	  return blitBuffer(asciiToBytes(string), buf, offset, length)
+	}
+
+	function latin1Write (buf, string, offset, length) {
+	  return asciiWrite(buf, string, offset, length)
+	}
+
+	function base64Write (buf, string, offset, length) {
+	  return blitBuffer(base64ToBytes(string), buf, offset, length)
+	}
+
+	function ucs2Write (buf, string, offset, length) {
+	  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
+	}
+
+	Buffer.prototype.write = function write (string, offset, length, encoding) {
+	  // Buffer#write(string)
+	  if (offset === undefined) {
+	    encoding = 'utf8'
+	    length = this.length
+	    offset = 0
+	  // Buffer#write(string, encoding)
+	  } else if (length === undefined && typeof offset === 'string') {
+	    encoding = offset
+	    length = this.length
+	    offset = 0
+	  // Buffer#write(string, offset[, length][, encoding])
+	  } else if (isFinite(offset)) {
+	    offset = offset | 0
+	    if (isFinite(length)) {
+	      length = length | 0
+	      if (encoding === undefined) encoding = 'utf8'
+	    } else {
+	      encoding = length
+	      length = undefined
+	    }
+	  // legacy write(string, encoding, offset, length) - remove in v0.13
+	  } else {
+	    throw new Error(
+	      'Buffer.write(string, encoding, offset[, length]) is no longer supported'
+	    )
+	  }
+
+	  var remaining = this.length - offset
+	  if (length === undefined || length > remaining) length = remaining
+
+	  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
+	    throw new RangeError('Attempt to write outside buffer bounds')
+	  }
+
+	  if (!encoding) encoding = 'utf8'
+
+	  var loweredCase = false
+	  for (;;) {
+	    switch (encoding) {
+	      case 'hex':
+	        return hexWrite(this, string, offset, length)
+
+	      case 'utf8':
+	      case 'utf-8':
+	        return utf8Write(this, string, offset, length)
+
+	      case 'ascii':
+	        return asciiWrite(this, string, offset, length)
+
+	      case 'latin1':
+	      case 'binary':
+	        return latin1Write(this, string, offset, length)
+
+	      case 'base64':
+	        // Warning: maxLength not taken into account in base64Write
+	        return base64Write(this, string, offset, length)
+
+	      case 'ucs2':
+	      case 'ucs-2':
+	      case 'utf16le':
+	      case 'utf-16le':
+	        return ucs2Write(this, string, offset, length)
+
+	      default:
+	        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
+	        encoding = ('' + encoding).toLowerCase()
+	        loweredCase = true
+	    }
+	  }
+	}
+
+	Buffer.prototype.toJSON = function toJSON () {
+	  return {
+	    type: 'Buffer',
+	    data: Array.prototype.slice.call(this._arr || this, 0)
+	  }
+	}
+
+	function base64Slice (buf, start, end) {
+	  if (start === 0 && end === buf.length) {
+	    return base64.fromByteArray(buf)
+	  } else {
+	    return base64.fromByteArray(buf.slice(start, end))
+	  }
+	}
+
+	function utf8Slice (buf, start, end) {
+	  end = Math.min(buf.length, end)
+	  var res = []
+
+	  var i = start
+	  while (i < end) {
+	    var firstByte = buf[i]
+	    var codePoint = null
+	    var bytesPerSequence = (firstByte > 0xEF) ? 4
+	      : (firstByte > 0xDF) ? 3
+	      : (firstByte > 0xBF) ? 2
+	      : 1
+
+	    if (i + bytesPerSequence <= end) {
+	      var secondByte, thirdByte, fourthByte, tempCodePoint
+
+	      switch (bytesPerSequence) {
+	        case 1:
+	          if (firstByte < 0x80) {
+	            codePoint = firstByte
+	          }
+	          break
+	        case 2:
+	          secondByte = buf[i + 1]
+	          if ((secondByte & 0xC0) === 0x80) {
+	            tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F)
+	            if (tempCodePoint > 0x7F) {
+	              codePoint = tempCodePoint
+	            }
+	          }
+	          break
+	        case 3:
+	          secondByte = buf[i + 1]
+	          thirdByte = buf[i + 2]
+	          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
+	            tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F)
+	            if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
+	              codePoint = tempCodePoint
+	            }
+	          }
+	          break
+	        case 4:
+	          secondByte = buf[i + 1]
+	          thirdByte = buf[i + 2]
+	          fourthByte = buf[i + 3]
+	          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
+	            tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F)
+	            if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
+	              codePoint = tempCodePoint
+	            }
+	          }
+	      }
+	    }
+
+	    if (codePoint === null) {
+	      // we did not generate a valid codePoint so insert a
+	      // replacement char (U+FFFD) and advance only 1 byte
+	      codePoint = 0xFFFD
+	      bytesPerSequence = 1
+	    } else if (codePoint > 0xFFFF) {
+	      // encode to utf16 (surrogate pair dance)
+	      codePoint -= 0x10000
+	      res.push(codePoint >>> 10 & 0x3FF | 0xD800)
+	      codePoint = 0xDC00 | codePoint & 0x3FF
+	    }
+
+	    res.push(codePoint)
+	    i += bytesPerSequence
+	  }
+
+	  return decodeCodePointsArray(res)
+	}
+
+	// Based on http://stackoverflow.com/a/22747272/680742, the browser with
+	// the lowest limit is Chrome, with 0x10000 args.
+	// We go 1 magnitude less, for safety
+	var MAX_ARGUMENTS_LENGTH = 0x1000
+
+	function decodeCodePointsArray (codePoints) {
+	  var len = codePoints.length
+	  if (len <= MAX_ARGUMENTS_LENGTH) {
+	    return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
+	  }
+
+	  // Decode in chunks to avoid "call stack size exceeded".
+	  var res = ''
+	  var i = 0
+	  while (i < len) {
+	    res += String.fromCharCode.apply(
+	      String,
+	      codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
+	    )
+	  }
+	  return res
+	}
+
+	function asciiSlice (buf, start, end) {
+	  var ret = ''
+	  end = Math.min(buf.length, end)
+
+	  for (var i = start; i < end; ++i) {
+	    ret += String.fromCharCode(buf[i] & 0x7F)
+	  }
+	  return ret
+	}
+
+	function latin1Slice (buf, start, end) {
+	  var ret = ''
+	  end = Math.min(buf.length, end)
+
+	  for (var i = start; i < end; ++i) {
+	    ret += String.fromCharCode(buf[i])
+	  }
+	  return ret
+	}
+
+	function hexSlice (buf, start, end) {
+	  var len = buf.length
+
+	  if (!start || start < 0) start = 0
+	  if (!end || end < 0 || end > len) end = len
+
+	  var out = ''
+	  for (var i = start; i < end; ++i) {
+	    out += toHex(buf[i])
+	  }
+	  return out
+	}
+
+	function utf16leSlice (buf, start, end) {
+	  var bytes = buf.slice(start, end)
+	  var res = ''
+	  for (var i = 0; i < bytes.length; i += 2) {
+	    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
+	  }
+	  return res
+	}
+
+	Buffer.prototype.slice = function slice (start, end) {
+	  var len = this.length
+	  start = ~~start
+	  end = end === undefined ? len : ~~end
+
+	  if (start < 0) {
+	    start += len
+	    if (start < 0) start = 0
+	  } else if (start > len) {
+	    start = len
+	  }
+
+	  if (end < 0) {
+	    end += len
+	    if (end < 0) end = 0
+	  } else if (end > len) {
+	    end = len
+	  }
+
+	  if (end < start) end = start
+
+	  var newBuf
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    newBuf = this.subarray(start, end)
+	    newBuf.__proto__ = Buffer.prototype
+	  } else {
+	    var sliceLen = end - start
+	    newBuf = new Buffer(sliceLen, undefined)
+	    for (var i = 0; i < sliceLen; ++i) {
+	      newBuf[i] = this[i + start]
+	    }
+	  }
+
+	  return newBuf
+	}
+
+	/*
+	 * Need to make sure that buffer isn't trying to write out of bounds.
+	 */
+	function checkOffset (offset, ext, length) {
+	  if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
+	  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
+	}
+
+	Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+	  var val = this[offset]
+	  var mul = 1
+	  var i = 0
+	  while (++i < byteLength && (mul *= 0x100)) {
+	    val += this[offset + i] * mul
+	  }
+
+	  return val
+	}
+
+	Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) {
+	    checkOffset(offset, byteLength, this.length)
+	  }
+
+	  var val = this[offset + --byteLength]
+	  var mul = 1
+	  while (byteLength > 0 && (mul *= 0x100)) {
+	    val += this[offset + --byteLength] * mul
+	  }
+
+	  return val
+	}
+
+	Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 1, this.length)
+	  return this[offset]
+	}
+
+	Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 2, this.length)
+	  return this[offset] | (this[offset + 1] << 8)
+	}
+
+	Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 2, this.length)
+	  return (this[offset] << 8) | this[offset + 1]
+	}
+
+	Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+
+	  return ((this[offset]) |
+	      (this[offset + 1] << 8) |
+	      (this[offset + 2] << 16)) +
+	      (this[offset + 3] * 0x1000000)
+	}
+
+	Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+
+	  return (this[offset] * 0x1000000) +
+	    ((this[offset + 1] << 16) |
+	    (this[offset + 2] << 8) |
+	    this[offset + 3])
+	}
+
+	Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+	  var val = this[offset]
+	  var mul = 1
+	  var i = 0
+	  while (++i < byteLength && (mul *= 0x100)) {
+	    val += this[offset + i] * mul
+	  }
+	  mul *= 0x80
+
+	  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+	  return val
+	}
+
+	Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) checkOffset(offset, byteLength, this.length)
+
+	  var i = byteLength
+	  var mul = 1
+	  var val = this[offset + --i]
+	  while (i > 0 && (mul *= 0x100)) {
+	    val += this[offset + --i] * mul
+	  }
+	  mul *= 0x80
+
+	  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
+
+	  return val
+	}
+
+	Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 1, this.length)
+	  if (!(this[offset] & 0x80)) return (this[offset])
+	  return ((0xff - this[offset] + 1) * -1)
+	}
+
+	Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 2, this.length)
+	  var val = this[offset] | (this[offset + 1] << 8)
+	  return (val & 0x8000) ? val | 0xFFFF0000 : val
+	}
+
+	Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 2, this.length)
+	  var val = this[offset + 1] | (this[offset] << 8)
+	  return (val & 0x8000) ? val | 0xFFFF0000 : val
+	}
+
+	Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+
+	  return (this[offset]) |
+	    (this[offset + 1] << 8) |
+	    (this[offset + 2] << 16) |
+	    (this[offset + 3] << 24)
+	}
+
+	Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+
+	  return (this[offset] << 24) |
+	    (this[offset + 1] << 16) |
+	    (this[offset + 2] << 8) |
+	    (this[offset + 3])
+	}
+
+	Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+	  return ieee754.read(this, offset, true, 23, 4)
+	}
+
+	Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 4, this.length)
+	  return ieee754.read(this, offset, false, 23, 4)
+	}
+
+	Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 8, this.length)
+	  return ieee754.read(this, offset, true, 52, 8)
+	}
+
+	Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
+	  if (!noAssert) checkOffset(offset, 8, this.length)
+	  return ieee754.read(this, offset, false, 52, 8)
+	}
+
+	function checkInt (buf, value, offset, ext, max, min) {
+	  if (!Buffer.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
+	  if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
+	  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+	}
+
+	Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) {
+	    var maxBytes = Math.pow(2, 8 * byteLength) - 1
+	    checkInt(this, value, offset, byteLength, maxBytes, 0)
+	  }
+
+	  var mul = 1
+	  var i = 0
+	  this[offset] = value & 0xFF
+	  while (++i < byteLength && (mul *= 0x100)) {
+	    this[offset + i] = (value / mul) & 0xFF
+	  }
+
+	  return offset + byteLength
+	}
+
+	Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  byteLength = byteLength | 0
+	  if (!noAssert) {
+	    var maxBytes = Math.pow(2, 8 * byteLength) - 1
+	    checkInt(this, value, offset, byteLength, maxBytes, 0)
+	  }
+
+	  var i = byteLength - 1
+	  var mul = 1
+	  this[offset + i] = value & 0xFF
+	  while (--i >= 0 && (mul *= 0x100)) {
+	    this[offset + i] = (value / mul) & 0xFF
+	  }
+
+	  return offset + byteLength
+	}
+
+	Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+	  this[offset] = (value & 0xff)
+	  return offset + 1
+	}
+
+	function objectWriteUInt16 (buf, value, offset, littleEndian) {
+	  if (value < 0) value = 0xffff + value + 1
+	  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
+	    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
+	      (littleEndian ? i : 1 - i) * 8
+	  }
+	}
+
+	Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value & 0xff)
+	    this[offset + 1] = (value >>> 8)
+	  } else {
+	    objectWriteUInt16(this, value, offset, true)
+	  }
+	  return offset + 2
+	}
+
+	Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value >>> 8)
+	    this[offset + 1] = (value & 0xff)
+	  } else {
+	    objectWriteUInt16(this, value, offset, false)
+	  }
+	  return offset + 2
+	}
+
+	function objectWriteUInt32 (buf, value, offset, littleEndian) {
+	  if (value < 0) value = 0xffffffff + value + 1
+	  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
+	    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
+	  }
+	}
+
+	Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset + 3] = (value >>> 24)
+	    this[offset + 2] = (value >>> 16)
+	    this[offset + 1] = (value >>> 8)
+	    this[offset] = (value & 0xff)
+	  } else {
+	    objectWriteUInt32(this, value, offset, true)
+	  }
+	  return offset + 4
+	}
+
+	Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value >>> 24)
+	    this[offset + 1] = (value >>> 16)
+	    this[offset + 2] = (value >>> 8)
+	    this[offset + 3] = (value & 0xff)
+	  } else {
+	    objectWriteUInt32(this, value, offset, false)
+	  }
+	  return offset + 4
+	}
+
+	Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) {
+	    var limit = Math.pow(2, 8 * byteLength - 1)
+
+	    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+	  }
+
+	  var i = 0
+	  var mul = 1
+	  var sub = 0
+	  this[offset] = value & 0xFF
+	  while (++i < byteLength && (mul *= 0x100)) {
+	    if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
+	      sub = 1
+	    }
+	    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+	  }
+
+	  return offset + byteLength
+	}
+
+	Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) {
+	    var limit = Math.pow(2, 8 * byteLength - 1)
+
+	    checkInt(this, value, offset, byteLength, limit - 1, -limit)
+	  }
+
+	  var i = byteLength - 1
+	  var mul = 1
+	  var sub = 0
+	  this[offset + i] = value & 0xFF
+	  while (--i >= 0 && (mul *= 0x100)) {
+	    if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
+	      sub = 1
+	    }
+	    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
+	  }
+
+	  return offset + byteLength
+	}
+
+	Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
+	  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
+	  if (value < 0) value = 0xff + value + 1
+	  this[offset] = (value & 0xff)
+	  return offset + 1
+	}
+
+	Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value & 0xff)
+	    this[offset + 1] = (value >>> 8)
+	  } else {
+	    objectWriteUInt16(this, value, offset, true)
+	  }
+	  return offset + 2
+	}
+
+	Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value >>> 8)
+	    this[offset + 1] = (value & 0xff)
+	  } else {
+	    objectWriteUInt16(this, value, offset, false)
+	  }
+	  return offset + 2
+	}
+
+	Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value & 0xff)
+	    this[offset + 1] = (value >>> 8)
+	    this[offset + 2] = (value >>> 16)
+	    this[offset + 3] = (value >>> 24)
+	  } else {
+	    objectWriteUInt32(this, value, offset, true)
+	  }
+	  return offset + 4
+	}
+
+	Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
+	  value = +value
+	  offset = offset | 0
+	  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
+	  if (value < 0) value = 0xffffffff + value + 1
+	  if (Buffer.TYPED_ARRAY_SUPPORT) {
+	    this[offset] = (value >>> 24)
+	    this[offset + 1] = (value >>> 16)
+	    this[offset + 2] = (value >>> 8)
+	    this[offset + 3] = (value & 0xff)
+	  } else {
+	    objectWriteUInt32(this, value, offset, false)
+	  }
+	  return offset + 4
+	}
+
+	function checkIEEE754 (buf, value, offset, ext, max, min) {
+	  if (offset + ext > buf.length) throw new RangeError('Index out of range')
+	  if (offset < 0) throw new RangeError('Index out of range')
+	}
+
+	function writeFloat (buf, value, offset, littleEndian, noAssert) {
+	  if (!noAssert) {
+	    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
+	  }
+	  ieee754.write(buf, value, offset, littleEndian, 23, 4)
+	  return offset + 4
+	}
+
+	Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
+	  return writeFloat(this, value, offset, true, noAssert)
+	}
+
+	Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
+	  return writeFloat(this, value, offset, false, noAssert)
+	}
+
+	function writeDouble (buf, value, offset, littleEndian, noAssert) {
+	  if (!noAssert) {
+	    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
+	  }
+	  ieee754.write(buf, value, offset, littleEndian, 52, 8)
+	  return offset + 8
+	}
+
+	Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
+	  return writeDouble(this, value, offset, true, noAssert)
+	}
+
+	Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
+	  return writeDouble(this, value, offset, false, noAssert)
+	}
+
+	// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+	Buffer.prototype.copy = function copy (target, targetStart, start, end) {
+	  if (!start) start = 0
+	  if (!end && end !== 0) end = this.length
+	  if (targetStart >= target.length) targetStart = target.length
+	  if (!targetStart) targetStart = 0
+	  if (end > 0 && end < start) end = start
+
+	  // Copy 0 bytes; we're done
+	  if (end === start) return 0
+	  if (target.length === 0 || this.length === 0) return 0
+
+	  // Fatal error conditions
+	  if (targetStart < 0) {
+	    throw new RangeError('targetStart out of bounds')
+	  }
+	  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
+	  if (end < 0) throw new RangeError('sourceEnd out of bounds')
+
+	  // Are we oob?
+	  if (end > this.length) end = this.length
+	  if (target.length - targetStart < end - start) {
+	    end = target.length - targetStart + start
+	  }
+
+	  var len = end - start
+	  var i
+
+	  if (this === target && start < targetStart && targetStart < end) {
+	    // descending copy from end
+	    for (i = len - 1; i >= 0; --i) {
+	      target[i + targetStart] = this[i + start]
+	    }
+	  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
+	    // ascending copy from start
+	    for (i = 0; i < len; ++i) {
+	      target[i + targetStart] = this[i + start]
+	    }
+	  } else {
+	    Uint8Array.prototype.set.call(
+	      target,
+	      this.subarray(start, start + len),
+	      targetStart
+	    )
+	  }
+
+	  return len
+	}
+
+	// Usage:
+	//    buffer.fill(number[, offset[, end]])
+	//    buffer.fill(buffer[, offset[, end]])
+	//    buffer.fill(string[, offset[, end]][, encoding])
+	Buffer.prototype.fill = function fill (val, start, end, encoding) {
+	  // Handle string cases:
+	  if (typeof val === 'string') {
+	    if (typeof start === 'string') {
+	      encoding = start
+	      start = 0
+	      end = this.length
+	    } else if (typeof end === 'string') {
+	      encoding = end
+	      end = this.length
+	    }
+	    if (val.length === 1) {
+	      var code = val.charCodeAt(0)
+	      if (code < 256) {
+	        val = code
+	      }
+	    }
+	    if (encoding !== undefined && typeof encoding !== 'string') {
+	      throw new TypeError('encoding must be a string')
+	    }
+	    if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
+	      throw new TypeError('Unknown encoding: ' + encoding)
+	    }
+	  } else if (typeof val === 'number') {
+	    val = val & 255
+	  }
+
+	  // Invalid ranges are not set to a default, so can range check early.
+	  if (start < 0 || this.length < start || this.length < end) {
+	    throw new RangeError('Out of range index')
+	  }
+
+	  if (end <= start) {
+	    return this
+	  }
+
+	  start = start >>> 0
+	  end = end === undefined ? this.length : end >>> 0
+
+	  if (!val) val = 0
+
+	  var i
+	  if (typeof val === 'number') {
+	    for (i = start; i < end; ++i) {
+	      this[i] = val
+	    }
+	  } else {
+	    var bytes = Buffer.isBuffer(val)
+	      ? val
+	      : utf8ToBytes(new Buffer(val, encoding).toString())
+	    var len = bytes.length
+	    for (i = 0; i < end - start; ++i) {
+	      this[i + start] = bytes[i % len]
+	    }
+	  }
+
+	  return this
+	}
+
+	// HELPER FUNCTIONS
+	// ================
+
+	var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g
+
+	function base64clean (str) {
+	  // Node strips out invalid characters like \n and \t from the string, base64-js does not
+	  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
+	  // Node converts strings with length < 2 to ''
+	  if (str.length < 2) return ''
+	  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
+	  while (str.length % 4 !== 0) {
+	    str = str + '='
+	  }
+	  return str
+	}
+
+	function stringtrim (str) {
+	  if (str.trim) return str.trim()
+	  return str.replace(/^\s+|\s+$/g, '')
+	}
+
+	function toHex (n) {
+	  if (n < 16) return '0' + n.toString(16)
+	  return n.toString(16)
+	}
+
+	function utf8ToBytes (string, units) {
+	  units = units || Infinity
+	  var codePoint
+	  var length = string.length
+	  var leadSurrogate = null
+	  var bytes = []
+
+	  for (var i = 0; i < length; ++i) {
+	    codePoint = string.charCodeAt(i)
+
+	    // is surrogate component
+	    if (codePoint > 0xD7FF && codePoint < 0xE000) {
+	      // last char was a lead
+	      if (!leadSurrogate) {
+	        // no lead yet
+	        if (codePoint > 0xDBFF) {
+	          // unexpected trail
+	          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+	          continue
+	        } else if (i + 1 === length) {
+	          // unpaired lead
+	          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+	          continue
+	        }
+
+	        // valid lead
+	        leadSurrogate = codePoint
+
+	        continue
+	      }
+
+	      // 2 leads in a row
+	      if (codePoint < 0xDC00) {
+	        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+	        leadSurrogate = codePoint
+	        continue
+	      }
+
+	      // valid surrogate pair
+	      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
+	    } else if (leadSurrogate) {
+	      // valid bmp char, but last char was a lead
+	      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
+	    }
+
+	    leadSurrogate = null
+
+	    // encode utf8
+	    if (codePoint < 0x80) {
+	      if ((units -= 1) < 0) break
+	      bytes.push(codePoint)
+	    } else if (codePoint < 0x800) {
+	      if ((units -= 2) < 0) break
+	      bytes.push(
+	        codePoint >> 0x6 | 0xC0,
+	        codePoint & 0x3F | 0x80
+	      )
+	    } else if (codePoint < 0x10000) {
+	      if ((units -= 3) < 0) break
+	      bytes.push(
+	        codePoint >> 0xC | 0xE0,
+	        codePoint >> 0x6 & 0x3F | 0x80,
+	        codePoint & 0x3F | 0x80
+	      )
+	    } else if (codePoint < 0x110000) {
+	      if ((units -= 4) < 0) break
+	      bytes.push(
+	        codePoint >> 0x12 | 0xF0,
+	        codePoint >> 0xC & 0x3F | 0x80,
+	        codePoint >> 0x6 & 0x3F | 0x80,
+	        codePoint & 0x3F | 0x80
+	      )
+	    } else {
+	      throw new Error('Invalid code point')
+	    }
+	  }
+
+	  return bytes
+	}
+
+	function asciiToBytes (str) {
+	  var byteArray = []
+	  for (var i = 0; i < str.length; ++i) {
+	    // Node's code seems to be doing this and not & 0x7F..
+	    byteArray.push(str.charCodeAt(i) & 0xFF)
+	  }
+	  return byteArray
+	}
+
+	function utf16leToBytes (str, units) {
+	  var c, hi, lo
+	  var byteArray = []
+	  for (var i = 0; i < str.length; ++i) {
+	    if ((units -= 2) < 0) break
+
+	    c = str.charCodeAt(i)
+	    hi = c >> 8
+	    lo = c % 256
+	    byteArray.push(lo)
+	    byteArray.push(hi)
+	  }
+
+	  return byteArray
+	}
+
+	function base64ToBytes (str) {
+	  return base64.toByteArray(base64clean(str))
+	}
+
+	function blitBuffer (src, dst, offset, length) {
+	  for (var i = 0; i < length; ++i) {
+	    if ((i + offset >= dst.length) || (i >= src.length)) break
+	    dst[i + offset] = src[i]
+	  }
+	  return i
+	}
+
+	function isnan (val) {
+	  return val !== val // eslint-disable-line no-self-compare
+	}
+
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	var Buffer = __webpack_require__(1).Buffer;
+	var intSize = 4;
+	var zeroBuffer = new Buffer(intSize); zeroBuffer.fill(0);
+	var chrsz = 8;
+
+	function toArray(buf, bigEndian) {
+	  if ((buf.length % intSize) !== 0) {
+	    var len = buf.length + (intSize - (buf.length % intSize));
+	    buf = Buffer.concat([buf, zeroBuffer], len);
+	  }
+
+	  var arr = [];
+	  var fn = bigEndian ? buf.readInt32BE : buf.readInt32LE;
+	  for (var i = 0; i < buf.length; i += intSize) {
+	    arr.push(fn.call(buf, i));
+	  }
+	  return arr;
+	}
+
+	function toBuffer(arr, size, bigEndian) {
+	  var buf = new Buffer(size);
+	  var fn = bigEndian ? buf.writeInt32BE : buf.writeInt32LE;
+	  for (var i = 0; i < arr.length; i++) {
+	    fn.call(buf, arr[i], i * 4, true);
+	  }
+	  return buf;
+	}
+
+	function hash(buf, fn, hashSize, bigEndian) {
+	  if (!Buffer.isBuffer(buf)) buf = new Buffer(buf);
+	  var arr = fn(toArray(buf, bigEndian), buf.length * chrsz);
+	  return toBuffer(arr, hashSize, bigEndian);
+	}
+
+	module.exports = { hash: hash };
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _global = __webpack_require__(1);
+	var _buffer = __webpack_require__(1);
 
-	var _BigInteger = __webpack_require__(3);
+	var _cryptoBrowserify = __webpack_require__(14);
+
+	var crypto = _interopRequireWildcard(_cryptoBrowserify);
+
+	var _BigInteger = __webpack_require__(4);
 
 	var _BigInteger2 = _interopRequireDefault(_BigInteger);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*!
 	                                                                                                                                                           * Copyright 2016 Amazon.com,
@@ -140,6 +2052,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                                                                                                                                                           * for the specific language governing permissions and
 	                                                                                                                                                           * limitations under the License.
 	                                                                                                                                                           */
+
+	var createHash = crypto.createHash;
+	var createHmac = crypto.createHmac;
+	var randomBytes = crypto.randomBytes;
 
 	var initN = 'FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD1' + '29024E088A67CC74020BBEA63B139B22514A08798E3404DD' + 'EF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245' + 'E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7ED' + 'EE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3D' + 'C2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F' + '83655D23DCA3AD961C62F356208552BB9ED529077096966D' + '670C354E4ABC9804F1746C08CA18217C32905E462E36CE3B' + 'E39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9' + 'DE2BCBF6955817183995497CEA956AE515D2261898FA0510' + '15728E5A8AAAC42DAD33170D04507A33A85521ABDF1CBA64' + 'ECFB850458DBEF0A8AEA71575D060C7DB3970F85A6E1E4C7' + 'ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6B' + 'F12FFA06D98A0864D87602733EC86A64521F2B18177B200C' + 'BBE117577A615D6C770988C0BAD946E208E24FA074E5AB31' + '43DB5BFCE0FD108E4B82D120A93AD2CAFFFFFFFFFFFFFFFF';
 
@@ -162,7 +2078,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.smallAValue = this.generateRandomSmallA();
 	    this.getLargeAValue(function () {});
 
-	    this.infoBits = new _global.util.Buffer('Caldera Derived Key', 'utf8');
+	    this.infoBits = _buffer.Buffer.from('Caldera Derived Key', 'utf8');
 
 	    this.poolName = PoolName;
 	  }
@@ -207,7 +2123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  AuthenticationHelper.prototype.generateRandomSmallA = function generateRandomSmallA() {
-	    var hexRandom = _global.util.crypto.lib.randomBytes(128).toString('hex');
+	    var hexRandom = randomBytes(128).toString('hex');
 
 	    var randomBigInt = new _BigInteger2.default(hexRandom, 16);
 	    var smallABigInt = randomBigInt.mod(this.N);
@@ -223,7 +2139,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  AuthenticationHelper.prototype.generateRandomString = function generateRandomString() {
-	    return _global.util.crypto.lib.randomBytes(40).toString('base64');
+	    return randomBytes(40).toString('base64');
 	  };
 
 	  /**
@@ -269,7 +2185,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var combinedString = '' + deviceGroupKey + username + ':' + this.randomPassword;
 	    var hashedString = this.hash(combinedString);
 
-	    var hexRandom = _global.util.crypto.lib.randomBytes(16).toString('hex');
+	    var hexRandom = randomBytes(16).toString('hex');
 	    this.SaltToHashDevices = this.padHex(new _BigInteger2.default(hexRandom, 16));
 
 	    this.g.modPow(new _BigInteger2.default(this.hexHash(this.SaltToHashDevices + hashedString), 16), this.N, function (err, verifierDevicesNotPadded) {
@@ -333,7 +2249,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  AuthenticationHelper.prototype.hash = function hash(buf) {
-	    var hashHex = _global.util.crypto.sha256(buf, 'hex');
+	    var hashHex = createHash('sha256').update(buf).digest('hex');
 	    return new Array(64 - hashHex.length).join('0') + hashHex;
 	  };
 
@@ -346,7 +2262,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  AuthenticationHelper.prototype.hexHash = function hexHash(hexStr) {
-	    return this.hash(new _global.util.Buffer(hexStr, 'hex'));
+	    return this.hash(_buffer.Buffer.from(hexStr, 'hex'));
 	  };
 
 	  /**
@@ -359,9 +2275,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  AuthenticationHelper.prototype.computehkdf = function computehkdf(ikm, salt) {
-	    var prk = _global.util.crypto.hmac(salt, ikm, 'buffer', 'sha256');
-	    var infoBitsUpdate = _global.util.buffer.concat([this.infoBits, new _global.util.Buffer(String.fromCharCode(1), 'utf8')]);
-	    var hmac = _global.util.crypto.hmac(prk, infoBitsUpdate, 'buffer', 'sha256');
+	    var prk = createHmac('sha256', salt).update(ikm).digest();
+	    var infoBitsUpdate = _buffer.Buffer.concat([this.infoBits, _buffer.Buffer.from(String.fromCharCode(1), 'utf8')]);
+	    var hmac = createHmac('sha256', prk).update(infoBitsUpdate).digest();
 	    return hmac.slice(0, 16);
 	  };
 
@@ -398,7 +2314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        callback(err, null);
 	      }
 
-	      var hkdf = _this4.computehkdf(new _global.util.Buffer(_this4.padHex(sValue), 'hex'), new _global.util.Buffer(_this4.padHex(_this4.UValue.toString(16)), 'hex'));
+	      var hkdf = _this4.computehkdf(_buffer.Buffer.from(_this4.padHex(sValue), 'hex'), _buffer.Buffer.from(_this4.padHex(_this4.UValue.toString(16)), 'hex'));
 
 	      callback(null, hkdf);
 	    });
@@ -465,7 +2381,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AuthenticationHelper;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -1270,14 +3186,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	BigInteger.ONE = nbv(1);
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _CognitoJwtToken2 = __webpack_require__(6);
+	var _CognitoJwtToken2 = __webpack_require__(7);
 
 	var _CognitoJwtToken3 = _interopRequireDefault(_CognitoJwtToken2);
 
@@ -1327,14 +3243,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = CognitoAccessToken;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _CognitoJwtToken2 = __webpack_require__(6);
+	var _CognitoJwtToken2 = __webpack_require__(7);
 
 	var _CognitoJwtToken3 = _interopRequireDefault(_CognitoJwtToken2);
 
@@ -1384,14 +3300,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = CognitoIdToken;
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _global = __webpack_require__(1);
+	var _buffer = __webpack_require__(1);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*!
 	                                                                                                                                                           * Copyright 2016 Amazon.com,
@@ -1459,7 +3375,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  CognitoJwtToken.prototype.decodePayload = function decodePayload() {
 	    var payload = this.jwtToken.split('.')[1];
 	    try {
-	      return JSON.parse(_global.util.base64.decode(payload).toString('utf8'));
+	      return JSON.parse(_buffer.Buffer.from(payload, 'base64').toString('utf8'));
 	    } catch (err) {
 	      return {};
 	    }
@@ -1471,7 +3387,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = CognitoJwtToken;
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -1528,52 +3444,58 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = CognitoRefreshToken;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	exports.__esModule = true;
 
-	var _global = __webpack_require__(1);
+	var _buffer = __webpack_require__(1);
 
-	var _BigInteger = __webpack_require__(3);
+	var _cryptoBrowserify = __webpack_require__(14);
+
+	var crypto = _interopRequireWildcard(_cryptoBrowserify);
+
+	var _BigInteger = __webpack_require__(4);
 
 	var _BigInteger2 = _interopRequireDefault(_BigInteger);
 
-	var _AuthenticationHelper = __webpack_require__(2);
+	var _AuthenticationHelper = __webpack_require__(3);
 
 	var _AuthenticationHelper2 = _interopRequireDefault(_AuthenticationHelper);
 
-	var _CognitoAccessToken = __webpack_require__(4);
+	var _CognitoAccessToken = __webpack_require__(5);
 
 	var _CognitoAccessToken2 = _interopRequireDefault(_CognitoAccessToken);
 
-	var _CognitoIdToken = __webpack_require__(5);
+	var _CognitoIdToken = __webpack_require__(6);
 
 	var _CognitoIdToken2 = _interopRequireDefault(_CognitoIdToken);
 
-	var _CognitoRefreshToken = __webpack_require__(7);
+	var _CognitoRefreshToken = __webpack_require__(8);
 
 	var _CognitoRefreshToken2 = _interopRequireDefault(_CognitoRefreshToken);
 
-	var _CognitoUserSession = __webpack_require__(10);
+	var _CognitoUserSession = __webpack_require__(11);
 
 	var _CognitoUserSession2 = _interopRequireDefault(_CognitoUserSession);
 
-	var _DateHelper = __webpack_require__(11);
+	var _DateHelper = __webpack_require__(12);
 
 	var _DateHelper2 = _interopRequireDefault(_DateHelper);
 
-	var _CognitoUserAttribute = __webpack_require__(9);
+	var _CognitoUserAttribute = __webpack_require__(10);
 
 	var _CognitoUserAttribute2 = _interopRequireDefault(_CognitoUserAttribute);
 
-	var _StorageHelper = __webpack_require__(12);
+	var _StorageHelper = __webpack_require__(13);
 
 	var _StorageHelper2 = _interopRequireDefault(_StorageHelper);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*!
 	                                                                                                                                                           * Copyright 2016 Amazon.com,
@@ -1591,6 +3513,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                                                                                                                                                           * for the specific language governing permissions and
 	                                                                                                                                                           * limitations under the License.
 	                                                                                                                                                           */
+
+	//import createHmac from 'create-hmac';
+
+
+	var createHmac = crypto.createHmac;
 
 	/**
 	 * @callback nodeCallback
@@ -1738,7 +3665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      jsonReq.UserContextData = this.getUserContextData();
 	    }
 
-	    this.client.makeUnauthenticatedRequest('initiateAuth', jsonReq, function (err, data) {
+	    this.client.request('InitiateAuth', jsonReq, function (err, data) {
 	      if (err) {
 	        return callback.onFailure(err);
 	      }
@@ -1756,7 +3683,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * This is used for authenticating the user. it calls the AuthenticationHelper for SRP related
+	   * This is used for authenticating the user.
 	   * stuff
 	   * @param {AuthenticationDetails} authDetails Contains the authentication data
 	   * @param {object} callback Result callback map.
@@ -1773,6 +3700,34 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.authenticateUser = function authenticateUser(authDetails, callback) {
+	    if (this.authenticationFlowType === 'USER_PASSWORD_AUTH') {
+	      return this.authenticateUserPlainUsernamePassword(authDetails, callback);
+	    } else if (this.authenticationFlowType === 'USER_SRP_AUTH') {
+	      return this.authenticateUserDefaultAuth(authDetails, callback);
+	    }
+	    return callback.onFailure(new Error('Authentication flow type is invalid.'));
+	  };
+
+	  /**
+	   * PRIVATE ONLY: This is an internal only method and should not
+	   * be directly called by the consumers.
+	   * It calls the AuthenticationHelper for SRP related
+	   * stuff
+	   * @param {AuthenticationDetails} authDetails Contains the authentication data
+	   * @param {object} callback Result callback map.
+	   * @param {onFailure} callback.onFailure Called on any error.
+	   * @param {newPasswordRequired} callback.newPasswordRequired new
+	   *        password and any required attributes are required to continue
+	   * @param {mfaRequired} callback.mfaRequired MFA code
+	   *        required to continue.
+	   * @param {customChallenge} callback.customChallenge Custom challenge
+	   *        response required to continue.
+	   * @param {authSuccess} callback.onSuccess Called on success with the new session.
+	   * @returns {void}
+	   */
+
+
+	  CognitoUser.prototype.authenticateUserDefaultAuth = function authenticateUserDefaultAuth(authDetails, callback) {
 	    var _this2 = this;
 
 	    var authenticationHelper = new _AuthenticationHelper2.default(this.pool.getUserPoolId().split('_')[1]);
@@ -1809,7 +3764,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        jsonReq.UserContextData = _this2.getUserContextData(_this2.username);
 	      }
 
-	      _this2.client.makeUnauthenticatedRequest('initiateAuth', jsonReq, function (err, data) {
+	      _this2.client.request('InitiateAuth', jsonReq, function (err, data) {
 	        if (err) {
 	          return callback.onFailure(err);
 	        }
@@ -1829,7 +3784,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          var dateNow = dateHelper.getNowString();
 
-	          var signatureString = _global.util.crypto.hmac(hkdf, _global.util.buffer.concat([new _global.util.Buffer(_this2.pool.getUserPoolId().split('_')[1], 'utf8'), new _global.util.Buffer(_this2.username, 'utf8'), new _global.util.Buffer(challengeParameters.SECRET_BLOCK, 'base64'), new _global.util.Buffer(dateNow, 'utf8')]), 'base64', 'sha256');
+	          var signatureString = createHmac('sha256', hkdf).update(_buffer.Buffer.concat([_buffer.Buffer.from(_this2.pool.getUserPoolId().split('_')[1], 'utf8'), _buffer.Buffer.from(_this2.username, 'utf8'), _buffer.Buffer.from(challengeParameters.SECRET_BLOCK, 'base64'), _buffer.Buffer.from(dateNow, 'utf8')])).digest('base64');
 
 	          var challengeResponses = {};
 
@@ -1843,7 +3798,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 
 	          var respondToAuthChallenge = function respondToAuthChallenge(challenge, challengeCallback) {
-	            return _this2.client.makeUnauthenticatedRequest('respondToAuthChallenge', challenge, function (errChallenge, dataChallenge) {
+	            return _this2.client.request('RespondToAuthChallenge', challenge, function (errChallenge, dataChallenge) {
 	              if (errChallenge && errChallenge.code === 'ResourceNotFoundException' && errChallenge.message.toLowerCase().indexOf('device') !== -1) {
 	                challengeResponses.DEVICE_KEY = null;
 	                _this2.deviceKey = null;
@@ -1902,6 +3857,54 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
+	   * PRIVATE ONLY: This is an internal only method and should not
+	   * be directly called by the consumers.
+	   * @param {AuthenticationDetails} authDetails Contains the authentication data.
+	   * @param {object} callback Result callback map.
+	   * @param {onFailure} callback.onFailure Called on any error.
+	   * @param {mfaRequired} callback.mfaRequired MFA code
+	   *        required to continue.
+	   * @param {authSuccess} callback.onSuccess Called on success with the new session.
+	   * @returns {void}
+	   */
+
+
+	  CognitoUser.prototype.authenticateUserPlainUsernamePassword = function authenticateUserPlainUsernamePassword(authDetails, callback) {
+	    var _this3 = this;
+
+	    var authParameters = {};
+	    authParameters.USERNAME = this.username;
+	    authParameters.PASSWORD = authDetails.getPassword();
+	    if (!authParameters.PASSWORD) {
+	      callback.onFailure(new Error('PASSWORD parameter is required'));
+	      return;
+	    }
+	    var authenticationHelper = new _AuthenticationHelper2.default(this.pool.getUserPoolId().split('_')[1]);
+	    this.getCachedDeviceKeyAndPassword();
+	    if (this.deviceKey != null) {
+	      authParameters.DEVICE_KEY = this.deviceKey;
+	    }
+
+	    var jsonReq = {
+	      AuthFlow: 'USER_PASSWORD_AUTH',
+	      ClientId: this.pool.getClientId(),
+	      AuthParameters: authParameters,
+	      ClientMetadata: authDetails.getValidationData()
+	    };
+	    if (this.getUserContextData(this.username)) {
+	      jsonReq.UserContextData = this.getUserContextData(this.username);
+	    }
+	    // USER_PASSWORD_AUTH happens in a single round-trip: client sends userName and password,
+	    // Cognito UserPools verifies password and returns tokens.
+	    this.client.request('InitiateAuth', jsonReq, function (err, authResult) {
+	      if (err) {
+	        return callback.onFailure(err);
+	      }
+	      return _this3.authenticateUserInternal(authResult, authenticationHelper, callback);
+	    });
+	  };
+
+	  /**
 	  * PRIVATE ONLY: This is an internal only method and should not
 	  * be directly called by the consumers.
 	  * @param {object} dataAuthenticate authentication data
@@ -1912,7 +3915,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.authenticateUserInternal = function authenticateUserInternal(dataAuthenticate, authenticationHelper, callback) {
-	    var _this3 = this;
+	    var _this4 = this;
 
 	    var challengeName = dataAuthenticate.ChallengeName;
 	    var challengeParameters = dataAuthenticate.ChallengeParameters;
@@ -1961,17 +3964,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      var deviceSecretVerifierConfig = {
-	        Salt: new _global.util.Buffer(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
-	        PasswordVerifier: new _global.util.Buffer(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
+	        Salt: _buffer.Buffer.from(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
+	        PasswordVerifier: _buffer.Buffer.from(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
 	      };
 
-	      _this3.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
-	      _this3.deviceGroupKey = newDeviceMetadata.DeviceGroupKey;
-	      _this3.randomPassword = authenticationHelper.getRandomPassword();
+	      _this4.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
+	      _this4.deviceGroupKey = newDeviceMetadata.DeviceGroupKey;
+	      _this4.randomPassword = authenticationHelper.getRandomPassword();
 
-	      _this3.client.makeUnauthenticatedRequest('confirmDevice', {
+	      _this4.client.request('ConfirmDevice', {
 	        DeviceKey: newDeviceMetadata.DeviceKey,
-	        AccessToken: _this3.signInUserSession.getAccessToken().getJwtToken(),
+	        AccessToken: _this4.signInUserSession.getAccessToken().getJwtToken(),
 	        DeviceSecretVerifierConfig: deviceSecretVerifierConfig,
 	        DeviceName: navigator.userAgent
 	      }, function (errConfirm, dataConfirm) {
@@ -1979,12 +3982,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return callback.onFailure(errConfirm);
 	        }
 
-	        _this3.deviceKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey;
-	        _this3.cacheDeviceKeyAndPassword();
+	        _this4.deviceKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey;
+	        _this4.cacheDeviceKeyAndPassword();
 	        if (dataConfirm.UserConfirmationNecessary === true) {
-	          return callback.onSuccess(_this3.signInUserSession, dataConfirm.UserConfirmationNecessary);
+	          return callback.onSuccess(_this4.signInUserSession, dataConfirm.UserConfirmationNecessary);
 	        }
-	        return callback.onSuccess(_this3.signInUserSession);
+	        return callback.onSuccess(_this4.signInUserSession);
 	      });
 	      return undefined;
 	    });
@@ -2008,7 +4011,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.completeNewPasswordChallenge = function completeNewPasswordChallenge(newPassword, requiredAttributeData, callback) {
-	    var _this4 = this;
+	    var _this5 = this;
 
 	    if (!newPassword) {
 	      return callback.onFailure(new Error('New password is required.'));
@@ -2035,11 +4038,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      jsonReq.UserContextData = this.getUserContextData();
 	    }
 
-	    this.client.makeUnauthenticatedRequest('respondToAuthChallenge', jsonReq, function (errAuthenticate, dataAuthenticate) {
+	    this.client.request('RespondToAuthChallenge', jsonReq, function (errAuthenticate, dataAuthenticate) {
 	      if (errAuthenticate) {
 	        return callback.onFailure(errAuthenticate);
 	      }
-	      return _this4.authenticateUserInternal(dataAuthenticate, authenticationHelper, callback);
+	      return _this5.authenticateUserInternal(dataAuthenticate, authenticationHelper, callback);
 	    });
 	    return undefined;
 	  };
@@ -2057,7 +4060,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.getDeviceResponse = function getDeviceResponse(callback) {
-	    var _this5 = this;
+	    var _this6 = this;
 
 	    var authenticationHelper = new _AuthenticationHelper2.default(this.deviceGroupKey);
 	    var dateHelper = new _DateHelper2.default();
@@ -2076,13 +4079,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var jsonReq = {
 	        ChallengeName: 'DEVICE_SRP_AUTH',
-	        ClientId: _this5.pool.getClientId(),
+	        ClientId: _this6.pool.getClientId(),
 	        ChallengeResponses: authParameters
 	      };
-	      if (_this5.getUserContextData()) {
-	        jsonReq.UserContextData = _this5.getUserContextData();
+	      if (_this6.getUserContextData()) {
+	        jsonReq.UserContextData = _this6.getUserContextData();
 	      }
-	      _this5.client.makeUnauthenticatedRequest('respondToAuthChallenge', jsonReq, function (err, data) {
+	      _this6.client.request('RespondToAuthChallenge', jsonReq, function (err, data) {
 	        if (err) {
 	          return callback.onFailure(err);
 	        }
@@ -2092,7 +4095,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var serverBValue = new _BigInteger2.default(challengeParameters.SRP_B, 16);
 	        var salt = new _BigInteger2.default(challengeParameters.SALT, 16);
 
-	        authenticationHelper.getPasswordAuthenticationKey(_this5.deviceKey, _this5.randomPassword, serverBValue, salt, function (errHkdf, hkdf) {
+	        authenticationHelper.getPasswordAuthenticationKey(_this6.deviceKey, _this6.randomPassword, serverBValue, salt, function (errHkdf, hkdf) {
 	          // getPasswordAuthenticationKey callback start
 	          if (errHkdf) {
 	            return callback.onFailure(errHkdf);
@@ -2100,35 +4103,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          var dateNow = dateHelper.getNowString();
 
-	          var signatureString = _global.util.crypto.hmac(hkdf, _global.util.buffer.concat([new _global.util.Buffer(_this5.deviceGroupKey, 'utf8'), new _global.util.Buffer(_this5.deviceKey, 'utf8'), new _global.util.Buffer(challengeParameters.SECRET_BLOCK, 'base64'), new _global.util.Buffer(dateNow, 'utf8')]), 'base64', 'sha256');
+	          var signatureString = createHmac('sha256', hkdf).update(_buffer.Buffer.concat([_buffer.Buffer.from(_this6.deviceGroupKey, 'utf8'), _buffer.Buffer.from(_this6.deviceKey, 'utf8'), _buffer.Buffer.from(challengeParameters.SECRET_BLOCK, 'base64'), _buffer.Buffer.from(dateNow, 'utf8')])).digest('base64');
 
 	          var challengeResponses = {};
 
-	          challengeResponses.USERNAME = _this5.username;
+	          challengeResponses.USERNAME = _this6.username;
 	          challengeResponses.PASSWORD_CLAIM_SECRET_BLOCK = challengeParameters.SECRET_BLOCK;
 	          challengeResponses.TIMESTAMP = dateNow;
 	          challengeResponses.PASSWORD_CLAIM_SIGNATURE = signatureString;
-	          challengeResponses.DEVICE_KEY = _this5.deviceKey;
+	          challengeResponses.DEVICE_KEY = _this6.deviceKey;
 
 	          var jsonReqResp = {
 	            ChallengeName: 'DEVICE_PASSWORD_VERIFIER',
-	            ClientId: _this5.pool.getClientId(),
+	            ClientId: _this6.pool.getClientId(),
 	            ChallengeResponses: challengeResponses,
 	            Session: data.Session
 	          };
-	          if (_this5.getUserContextData()) {
-	            jsonReqResp.UserContextData = _this5.getUserContextData();
+	          if (_this6.getUserContextData()) {
+	            jsonReqResp.UserContextData = _this6.getUserContextData();
 	          }
 
-	          _this5.client.makeUnauthenticatedRequest('respondToAuthChallenge', jsonReqResp, function (errAuthenticate, dataAuthenticate) {
+	          _this6.client.request('RespondToAuthChallenge', jsonReqResp, function (errAuthenticate, dataAuthenticate) {
 	            if (errAuthenticate) {
 	              return callback.onFailure(errAuthenticate);
 	            }
 
-	            _this5.signInUserSession = _this5.getCognitoUserSession(dataAuthenticate.AuthenticationResult);
-	            _this5.cacheTokens();
+	            _this6.signInUserSession = _this6.getCognitoUserSession(dataAuthenticate.AuthenticationResult);
+	            _this6.cacheTokens();
 
-	            return callback.onSuccess(_this5.signInUserSession);
+	            return callback.onSuccess(_this6.signInUserSession);
 	          });
 	          return undefined;
 	          // getPasswordAuthenticationKey callback end
@@ -2158,7 +4161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.getUserContextData()) {
 	      jsonReq.UserContextData = this.getUserContextData();
 	    }
-	    this.client.makeUnauthenticatedRequest('confirmSignUp', jsonReq, function (err) {
+	    this.client.request('ConfirmSignUp', jsonReq, function (err) {
 	      if (err) {
 	        return callback(err, null);
 	      }
@@ -2179,7 +4182,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.sendCustomChallengeAnswer = function sendCustomChallengeAnswer(answerChallenge, callback) {
-	    var _this6 = this;
+	    var _this7 = this;
 
 	    var challengeResponses = {};
 	    challengeResponses.USERNAME = this.username;
@@ -2200,12 +4203,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.getUserContextData()) {
 	      jsonReq.UserContextData = this.getUserContextData();
 	    }
-	    this.client.makeUnauthenticatedRequest('respondToAuthChallenge', jsonReq, function (err, data) {
+	    this.client.request('RespondToAuthChallenge', jsonReq, function (err, data) {
 	      if (err) {
 	        return callback.onFailure(err);
 	      }
 
-	      return _this6.authenticateUserInternal(data, authenticationHelper, callback);
+	      return _this7.authenticateUserInternal(data, authenticationHelper, callback);
 	    });
 	  };
 
@@ -2221,7 +4224,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.sendMFACode = function sendMFACode(confirmationCode, callback, mfaType) {
-	    var _this7 = this;
+	    var _this8 = this;
 
 	    var challengeResponses = {};
 	    challengeResponses.USERNAME = this.username;
@@ -2245,7 +4248,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      jsonReq.UserContextData = this.getUserContextData();
 	    }
 
-	    this.client.makeUnauthenticatedRequest('respondToAuthChallenge', jsonReq, function (err, dataAuthenticate) {
+	    this.client.request('RespondToAuthChallenge', jsonReq, function (err, dataAuthenticate) {
 	      if (err) {
 	        return callback.onFailure(err);
 	      }
@@ -2253,35 +4256,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var challengeName = dataAuthenticate.ChallengeName;
 
 	      if (challengeName === 'DEVICE_SRP_AUTH') {
-	        _this7.getDeviceResponse(callback);
+	        _this8.getDeviceResponse(callback);
 	        return undefined;
 	      }
 
-	      _this7.signInUserSession = _this7.getCognitoUserSession(dataAuthenticate.AuthenticationResult);
-	      _this7.cacheTokens();
+	      _this8.signInUserSession = _this8.getCognitoUserSession(dataAuthenticate.AuthenticationResult);
+	      _this8.cacheTokens();
 
 	      if (dataAuthenticate.AuthenticationResult.NewDeviceMetadata == null) {
-	        return callback.onSuccess(_this7.signInUserSession);
+	        return callback.onSuccess(_this8.signInUserSession);
 	      }
 
-	      var authenticationHelper = new _AuthenticationHelper2.default(_this7.pool.getUserPoolId().split('_')[1]);
+	      var authenticationHelper = new _AuthenticationHelper2.default(_this8.pool.getUserPoolId().split('_')[1]);
 	      authenticationHelper.generateHashDevice(dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceGroupKey, dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey, function (errGenHash) {
 	        if (errGenHash) {
 	          return callback.onFailure(errGenHash);
 	        }
 
 	        var deviceSecretVerifierConfig = {
-	          Salt: new _global.util.Buffer(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
-	          PasswordVerifier: new _global.util.Buffer(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
+	          Salt: _buffer.Buffer.from(authenticationHelper.getSaltDevices(), 'hex').toString('base64'),
+	          PasswordVerifier: _buffer.Buffer.from(authenticationHelper.getVerifierDevices(), 'hex').toString('base64')
 	        };
 
-	        _this7.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
-	        _this7.deviceGroupKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceGroupKey;
-	        _this7.randomPassword = authenticationHelper.getRandomPassword();
+	        _this8.verifierDevices = deviceSecretVerifierConfig.PasswordVerifier;
+	        _this8.deviceGroupKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceGroupKey;
+	        _this8.randomPassword = authenticationHelper.getRandomPassword();
 
-	        _this7.client.makeUnauthenticatedRequest('confirmDevice', {
+	        _this8.client.request('ConfirmDevice', {
 	          DeviceKey: dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey,
-	          AccessToken: _this7.signInUserSession.getAccessToken().getJwtToken(),
+	          AccessToken: _this8.signInUserSession.getAccessToken().getJwtToken(),
 	          DeviceSecretVerifierConfig: deviceSecretVerifierConfig,
 	          DeviceName: navigator.userAgent
 	        }, function (errConfirm, dataConfirm) {
@@ -2289,12 +4292,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return callback.onFailure(errConfirm);
 	          }
 
-	          _this7.deviceKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey;
-	          _this7.cacheDeviceKeyAndPassword();
+	          _this8.deviceKey = dataAuthenticate.AuthenticationResult.NewDeviceMetadata.DeviceKey;
+	          _this8.cacheDeviceKeyAndPassword();
 	          if (dataConfirm.UserConfirmationNecessary === true) {
-	            return callback.onSuccess(_this7.signInUserSession, dataConfirm.UserConfirmationNecessary);
+	            return callback.onSuccess(_this8.signInUserSession, dataConfirm.UserConfirmationNecessary);
 	          }
-	          return callback.onSuccess(_this7.signInUserSession);
+	          return callback.onSuccess(_this8.signInUserSession);
 	        });
 	        return undefined;
 	      });
@@ -2316,7 +4319,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback(new Error('User is not authenticated'), null);
 	    }
 
-	    this.client.makeUnauthenticatedRequest('changePassword', {
+	    this.client.request('ChangePassword', {
 	      PreviousPassword: oldUserPassword,
 	      ProposedPassword: newUserPassword,
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
@@ -2348,7 +4351,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    mfaOptions.push(mfaEnabled);
 
-	    this.client.makeUnauthenticatedRequest('setUserSettings', {
+	    this.client.request('SetUserSettings', {
 	      MFAOptions: mfaOptions,
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
 	    }, function (err) {
@@ -2374,7 +4377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback(new Error('User is not authenticated'), null);
 	    }
 
-	    this.client.makeUnauthenticatedRequest('setUserMFAPreference', {
+	    this.client.request('SetUserMFAPreference', {
 	      SMSMfaSettings: smsMfaSettings,
 	      SoftwareTokenMfaSettings: softwareTokenMfaSettings,
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
@@ -2401,7 +4404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var mfaOptions = [];
 
-	    this.client.makeUnauthenticatedRequest('setUserSettings', {
+	    this.client.request('SetUserSettings', {
 	      MFAOptions: mfaOptions,
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
 	    }, function (err) {
@@ -2421,19 +4424,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.deleteUser = function deleteUser(callback) {
-	    var _this8 = this;
+	    var _this9 = this;
 
 	    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
 	      return callback(new Error('User is not authenticated'), null);
 	    }
 
-	    this.client.makeUnauthenticatedRequest('deleteUser', {
+	    this.client.request('DeleteUser', {
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
 	    }, function (err) {
 	      if (err) {
 	        return callback(err, null);
 	      }
-	      _this8.clearCachedTokens();
+	      _this9.clearCachedTokens();
 	      return callback(null, 'SUCCESS');
 	    });
 	    return undefined;
@@ -2455,7 +4458,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback(new Error('User is not authenticated'), null);
 	    }
 
-	    this.client.makeUnauthenticatedRequest('updateUserAttributes', {
+	    this.client.request('UpdateUserAttributes', {
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
 	      UserAttributes: attributes
 	    }, function (err) {
@@ -2479,7 +4482,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback(new Error('User is not authenticated'), null);
 	    }
 
-	    this.client.makeUnauthenticatedRequest('getUser', {
+	    this.client.request('GetUser', {
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
 	    }, function (err, userData) {
 	      if (err) {
@@ -2514,7 +4517,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback(new Error('User is not authenticated'), null);
 	    }
 
-	    this.client.makeUnauthenticatedRequest('getUser', {
+	    this.client.request('GetUser', {
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
 	    }, function (err, userData) {
 	      if (err) {
@@ -2522,6 +4525,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      return callback(null, userData.MFAOptions);
+	    });
+	    return undefined;
+	  };
+
+	  /**
+	   * This is used by an authenticated users to get the userData
+	   * @param {nodeCallback<UserData>} callback Called on success or error.
+	   * @returns {void}
+	   */
+
+
+	  CognitoUser.prototype.getUserData = function getUserData(callback) {
+	    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
+	      return callback(new Error('User is not authenticated'), null);
+	    }
+
+	    this.client.request('GetUser', {
+	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
+	    }, function (err, userData) {
+	      if (err) {
+	        return callback(err, null);
+	      }
+
+	      return callback(null, userData);
 	    });
 	    return undefined;
 	  };
@@ -2539,7 +4566,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback(new Error('User is not authenticated'), null);
 	    }
 
-	    this.client.makeUnauthenticatedRequest('deleteUserAttributes', {
+	    this.client.request('DeleteUserAttributes', {
 	      UserAttributeNames: attributeList,
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
 	    }, function (err) {
@@ -2564,7 +4591,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      Username: this.username
 	    };
 
-	    this.client.makeUnauthenticatedRequest('resendConfirmationCode', jsonReq, function (err, result) {
+	    this.client.request('ResendConfirmationCode', jsonReq, function (err, result) {
 	      if (err) {
 	        return callback(err, null);
 	      }
@@ -2641,7 +4668,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.refreshSession = function refreshSession(refreshToken, callback) {
-	    var _this9 = this;
+	    var _this10 = this;
 
 	    var authParameters = {};
 	    authParameters.REFRESH_TOKEN = refreshToken.getToken();
@@ -2663,10 +4690,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.getUserContextData()) {
 	      jsonReq.UserContextData = this.getUserContextData();
 	    }
-	    this.client.makeUnauthenticatedRequest('initiateAuth', jsonReq, function (err, authResult) {
+	    this.client.request('InitiateAuth', jsonReq, function (err, authResult) {
 	      if (err) {
 	        if (err.code === 'NotAuthorizedException') {
-	          _this9.clearCachedTokens();
+	          _this10.clearCachedTokens();
 	        }
 	        return callback(err, null);
 	      }
@@ -2675,9 +4702,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!Object.prototype.hasOwnProperty.call(authenticationResult, 'RefreshToken')) {
 	          authenticationResult.RefreshToken = refreshToken.getToken();
 	        }
-	        _this9.signInUserSession = _this9.getCognitoUserSession(authenticationResult);
-	        _this9.cacheTokens();
-	        return callback(null, _this9.signInUserSession);
+	        _this10.signInUserSession = _this10.getCognitoUserSession(authenticationResult);
+	        _this10.cacheTokens();
+	        return callback(null, _this10.signInUserSession);
 	      }
 	      return undefined;
 	    });
@@ -2817,7 +4844,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.getUserContextData()) {
 	      jsonReq.UserContextData = this.getUserContextData();
 	    }
-	    this.client.makeUnauthenticatedRequest('forgotPassword', jsonReq, function (err, data) {
+	    this.client.request('ForgotPassword', jsonReq, function (err, data) {
 	      if (err) {
 	        return callback.onFailure(err);
 	      }
@@ -2849,7 +4876,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.getUserContextData()) {
 	      jsonReq.UserContextData = this.getUserContextData();
 	    }
-	    this.client.makeUnauthenticatedRequest('confirmForgotPassword', jsonReq, function (err) {
+	    this.client.request('ConfirmForgotPassword', jsonReq, function (err) {
 	      if (err) {
 	        return callback.onFailure(err);
 	      }
@@ -2872,7 +4899,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback.onFailure(new Error('User is not authenticated'));
 	    }
 
-	    this.client.makeUnauthenticatedRequest('getUserAttributeVerificationCode', {
+	    this.client.request('GetUserAttributeVerificationCode', {
 	      AttributeName: attributeName,
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
 	    }, function (err, data) {
@@ -2903,7 +4930,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback.onFailure(new Error('User is not authenticated'));
 	    }
 
-	    this.client.makeUnauthenticatedRequest('verifyUserAttribute', {
+	    this.client.request('VerifyUserAttribute', {
 	      AttributeName: attributeName,
 	      Code: confirmationCode,
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
@@ -2930,7 +4957,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback.onFailure(new Error('User is not authenticated'));
 	    }
 
-	    this.client.makeUnauthenticatedRequest('getDevice', {
+	    this.client.request('GetDevice', {
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
 	      DeviceKey: this.deviceKey
 	    }, function (err, data) {
@@ -2957,7 +4984,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback.onFailure(new Error('User is not authenticated'));
 	    }
 
-	    this.client.makeUnauthenticatedRequest('forgetDevice', {
+	    this.client.request('ForgetDevice', {
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
 	      DeviceKey: deviceKey
 	    }, function (err) {
@@ -2979,15 +5006,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.forgetDevice = function forgetDevice(callback) {
-	    var _this10 = this;
+	    var _this11 = this;
 
 	    this.forgetSpecificDevice(this.deviceKey, {
 	      onFailure: callback.onFailure,
 	      onSuccess: function onSuccess(result) {
-	        _this10.deviceKey = null;
-	        _this10.deviceGroupKey = null;
-	        _this10.randomPassword = null;
-	        _this10.clearCachedDeviceKeyAndPassword();
+	        _this11.deviceKey = null;
+	        _this11.deviceGroupKey = null;
+	        _this11.randomPassword = null;
+	        _this11.clearCachedDeviceKeyAndPassword();
 	        return callback.onSuccess(result);
 	      }
 	    });
@@ -3007,7 +5034,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback.onFailure(new Error('User is not authenticated'));
 	    }
 
-	    this.client.makeUnauthenticatedRequest('updateDeviceStatus', {
+	    this.client.request('UpdateDeviceStatus', {
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
 	      DeviceKey: this.deviceKey,
 	      DeviceRememberedStatus: 'remembered'
@@ -3034,7 +5061,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback.onFailure(new Error('User is not authenticated'));
 	    }
 
-	    this.client.makeUnauthenticatedRequest('updateDeviceStatus', {
+	    this.client.request('UpdateDeviceStatus', {
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
 	      DeviceKey: this.deviceKey,
 	      DeviceRememberedStatus: 'not_remembered'
@@ -3064,7 +5091,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return callback.onFailure(new Error('User is not authenticated'));
 	    }
 
-	    this.client.makeUnauthenticatedRequest('listDevices', {
+	    this.client.request('ListDevices', {
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
 	      Limit: limit,
 	      PaginationToken: paginationToken
@@ -3087,19 +5114,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.globalSignOut = function globalSignOut(callback) {
-	    var _this11 = this;
+	    var _this12 = this;
 
 	    if (this.signInUserSession == null || !this.signInUserSession.isValid()) {
 	      return callback.onFailure(new Error('User is not authenticated'));
 	    }
 
-	    this.client.makeUnauthenticatedRequest('globalSignOut', {
+	    this.client.request('GlobalSignOut', {
 	      AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
 	    }, function (err) {
 	      if (err) {
 	        return callback.onFailure(err);
 	      }
-	      _this11.clearCachedTokens();
+	      _this12.clearCachedTokens();
 	      return callback.onSuccess('SUCCESS');
 	    });
 	    return undefined;
@@ -3125,7 +5152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.sendMFASelectionAnswer = function sendMFASelectionAnswer(answerChallenge, callback) {
-	    var _this12 = this;
+	    var _this13 = this;
 
 	    var challengeResponses = {};
 	    challengeResponses.USERNAME = this.username;
@@ -3140,11 +5167,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.getUserContextData()) {
 	      jsonReq.UserContextData = this.getUserContextData();
 	    }
-	    this.client.makeUnauthenticatedRequest('respondToAuthChallenge', jsonReq, function (err, data) {
+	    this.client.request('RespondToAuthChallenge', jsonReq, function (err, data) {
 	      if (err) {
 	        return callback.onFailure(err);
 	      }
-	      _this12.Session = data.Session;
+	      _this13.Session = data.Session;
 	      if (answerChallenge === 'SMS_MFA') {
 	        return callback.mfaRequired(data.challengeName, data.challengeParameters);
 	      }
@@ -3174,20 +5201,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.associateSoftwareToken = function associateSoftwareToken(callback) {
-	    var _this13 = this;
+	    var _this14 = this;
 
 	    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-	      this.client.makeUnauthenticatedRequest('associateSoftwareToken', {
+	      this.client.request('AssociateSoftwareToken', {
 	        Session: this.Session
 	      }, function (err, data) {
 	        if (err) {
 	          return callback.onFailure(err);
 	        }
-	        _this13.Session = data.Session;
+	        _this14.Session = data.Session;
 	        return callback.associateSecretCode(data.SecretCode);
 	      });
 	    } else {
-	      this.client.makeUnauthenticatedRequest('associateSoftwareToken', {
+	      this.client.request('AssociateSoftwareToken', {
 	        AccessToken: this.signInUserSession.getAccessToken().getJwtToken()
 	      }, function (err, data) {
 	        if (err) {
@@ -3199,7 +5226,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  /**
-	   * This is used by an authenticated or a user trying to authenticate to associate a TOTP MFA
+	   * This is used by an authenticated or a user trying to authenticate to verify a TOTP MFA
 	   * @param {string} totpCode The MFA code entered by the user.
 	   * @param {string} friendlyDeviceName The device name we are assigning to the device.
 	   * @param {nodeCallback<string>} callback Called on success or error.
@@ -3208,10 +5235,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 	  CognitoUser.prototype.verifySoftwareToken = function verifySoftwareToken(totpCode, friendlyDeviceName, callback) {
-	    var _this14 = this;
+	    var _this15 = this;
 
 	    if (!(this.signInUserSession != null && this.signInUserSession.isValid())) {
-	      this.client.makeUnauthenticatedRequest('verifySoftwareToken', {
+	      this.client.request('VerifySoftwareToken', {
 	        Session: this.Session,
 	        UserCode: totpCode,
 	        FriendlyDeviceName: friendlyDeviceName
@@ -3219,30 +5246,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (err) {
 	          return callback.onFailure(err);
 	        }
-	        _this14.Session = data.Session;
+	        _this15.Session = data.Session;
 	        var challengeResponses = {};
-	        challengeResponses.USERNAME = _this14.username;
+	        challengeResponses.USERNAME = _this15.username;
 	        var jsonReq = {
 	          ChallengeName: 'MFA_SETUP',
-	          ClientId: _this14.pool.getClientId(),
+	          ClientId: _this15.pool.getClientId(),
 	          ChallengeResponses: challengeResponses,
-	          Session: _this14.Session
+	          Session: _this15.Session
 	        };
-	        if (_this14.getUserContextData()) {
-	          jsonReq.UserContextData = _this14.getUserContextData();
+	        if (_this15.getUserContextData()) {
+	          jsonReq.UserContextData = _this15.getUserContextData();
 	        }
-	        _this14.client.makeUnauthenticatedRequest('respondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
+	        _this15.client.request('RespondToAuthChallenge', jsonReq, function (errRespond, dataRespond) {
 	          if (errRespond) {
 	            return callback.onFailure(errRespond);
 	          }
-	          _this14.signInUserSession = _this14.getCognitoUserSession(dataRespond.AuthenticationResult);
-	          _this14.cacheTokens();
-	          return callback.onSuccess(_this14.signInUserSession);
+	          _this15.signInUserSession = _this15.getCognitoUserSession(dataRespond.AuthenticationResult);
+	          _this15.cacheTokens();
+	          return callback.onSuccess(_this15.signInUserSession);
 	        });
 	        return undefined;
 	      });
 	    } else {
-	      this.client.makeUnauthenticatedRequest('verifySoftwareToken', {
+	      this.client.request('VerifySoftwareToken', {
 	        AccessToken: this.signInUserSession.getAccessToken().getJwtToken(),
 	        UserCode: totpCode,
 	        FriendlyDeviceName: friendlyDeviceName
@@ -3250,7 +5277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (err) {
 	          return callback.onFailure(err);
 	        }
-	        return callback(null, data);
+	        return callback.onSuccess(data);
 	      });
 	    }
 	  };
@@ -3261,7 +5288,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = CognitoUser;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -3374,7 +5401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = CognitoUserAttribute;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -3496,7 +5523,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = CognitoUserSession;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -3571,7 +5598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = DateHelper;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -3691,546 +5718,328 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = StorageHelper;
 
 /***/ }),
-/* 13 */
-/***/ (function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_13__;
-
-/***/ }),
 /* 14 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	var Buffer = __webpack_require__(1).Buffer
+	var sha = __webpack_require__(26)
+	var sha256 = __webpack_require__(27)
+	var rng = __webpack_require__(25)
+	var md5 = __webpack_require__(24)
 
-	exports.__esModule = true;
+	var algorithms = {
+	  sha1: sha,
+	  sha256: sha256,
+	  md5: md5
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	var blocksize = 64
+	var zeroBuffer = new Buffer(blocksize); zeroBuffer.fill(0)
+	function hmac(fn, key, data) {
+	  if(!Buffer.isBuffer(key)) key = new Buffer(key)
+	  if(!Buffer.isBuffer(data)) data = new Buffer(data)
 
-	/*!
-	 * Copyright 2016 Amazon.com,
-	 * Inc. or its affiliates. All Rights Reserved.
-	 *
-	 * Licensed under the Amazon Software License (the "License").
-	 * You may not use this file except in compliance with the
-	 * License. A copy of the License is located at
-	 *
-	 *     http://aws.amazon.com/asl/
-	 *
-	 * or in the "license" file accompanying this file. This file is
-	 * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-	 * CONDITIONS OF ANY KIND, express or implied. See the License
-	 * for the specific language governing permissions and
-	 * limitations under the License.
-	 */
-
-	/** @class */
-	var AuthenticationDetails = function () {
-	  /**
-	   * Constructs a new AuthenticationDetails object
-	   * @param {object=} data Creation options.
-	   * @param {string} data.Username User being authenticated.
-	   * @param {string} data.Password Plain-text password to authenticate with.
-	   * @param {(AttributeArg[])?} data.ValidationData Application extra metadata.
-	   * @param {(AttributeArg[])?} data.AuthParamaters Authentication paramaters for custom auth.
-	   */
-	  function AuthenticationDetails(data) {
-	    _classCallCheck(this, AuthenticationDetails);
-
-	    var _ref = data || {},
-	        ValidationData = _ref.ValidationData,
-	        Username = _ref.Username,
-	        Password = _ref.Password,
-	        AuthParameters = _ref.AuthParameters;
-
-	    this.validationData = ValidationData || [];
-	    this.authParameters = AuthParameters || [];
-	    this.username = Username;
-	    this.password = Password;
+	  if(key.length > blocksize) {
+	    key = fn(key)
+	  } else if(key.length < blocksize) {
+	    key = Buffer.concat([key, zeroBuffer], blocksize)
 	  }
 
-	  /**
-	   * @returns {string} the record's username
-	   */
+	  var ipad = new Buffer(blocksize), opad = new Buffer(blocksize)
+	  for(var i = 0; i < blocksize; i++) {
+	    ipad[i] = key[i] ^ 0x36
+	    opad[i] = key[i] ^ 0x5C
+	  }
 
+	  var hash = fn(Buffer.concat([ipad, data]))
+	  return fn(Buffer.concat([opad, hash]))
+	}
 
-	  AuthenticationDetails.prototype.getUsername = function getUsername() {
-	    return this.username;
-	  };
+	function hash(alg, key) {
+	  alg = alg || 'sha1'
+	  var fn = algorithms[alg]
+	  var bufs = []
+	  var length = 0
+	  if(!fn) error('algorithm:', alg, 'is not yet supported')
+	  return {
+	    update: function (data) {
+	      if(!Buffer.isBuffer(data)) data = new Buffer(data)
+	        
+	      bufs.push(data)
+	      length += data.length
+	      return this
+	    },
+	    digest: function (enc) {
+	      var buf = Buffer.concat(bufs)
+	      var r = key ? hmac(fn, key, buf) : fn(buf)
+	      bufs = null
+	      return enc ? r.toString(enc) : r
+	    }
+	  }
+	}
 
-	  /**
-	   * @returns {string} the record's password
-	   */
+	function error () {
+	  var m = [].slice.call(arguments).join(' ')
+	  throw new Error([
+	    m,
+	    'we accept pull requests',
+	    'http://github.com/dominictarr/crypto-browserify'
+	    ].join('\n'))
+	}
 
+	exports.createHash = function (alg) { return hash(alg) }
+	exports.createHmac = function (alg, key) { return hash(alg, key) }
+	exports.randomBytes = function(size, callback) {
+	  if (callback && callback.call) {
+	    try {
+	      callback.call(this, undefined, new Buffer(rng(size)))
+	    } catch (err) { callback(err) }
+	  } else {
+	    return new Buffer(rng(size))
+	  }
+	}
 
-	  AuthenticationDetails.prototype.getPassword = function getPassword() {
-	    return this.password;
-	  };
+	function each(a, f) {
+	  for(var i in a)
+	    f(a[i], i)
+	}
 
-	  /**
-	   * @returns {Array} the record's validationData
-	   */
+	// the least I can do is make error messages for the rest of the node.js/crypto api.
+	each(['createCredentials'
+	, 'createCipher'
+	, 'createCipheriv'
+	, 'createDecipher'
+	, 'createDecipheriv'
+	, 'createSign'
+	, 'createVerify'
+	, 'createDiffieHellman'
+	, 'pbkdf2'], function (name) {
+	  exports[name] = function () {
+	    error('sorry,', name, 'is not implemented yet')
+	  }
+	})
 
-
-	  AuthenticationDetails.prototype.getValidationData = function getValidationData() {
-	    return this.validationData;
-	  };
-
-	  /**
-	   * @returns {Array} the record's authParameters
-	   */
-
-
-	  AuthenticationDetails.prototype.getAuthParameters = function getAuthParameters() {
-	    return this.authParameters;
-	  };
-
-	  return AuthenticationDetails;
-	}();
-
-	exports.default = AuthenticationDetails;
 
 /***/ }),
 /* 15 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-	'use strict';
+	'use strict'
 
-	exports.__esModule = true;
+	exports.byteLength = byteLength
+	exports.toByteArray = toByteArray
+	exports.fromByteArray = fromByteArray
 
-	var _cognitoidentityserviceprovider = __webpack_require__(13);
+	var lookup = []
+	var revLookup = []
+	var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
 
-	var _cognitoidentityserviceprovider2 = _interopRequireDefault(_cognitoidentityserviceprovider);
+	var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+	for (var i = 0, len = code.length; i < len; ++i) {
+	  lookup[i] = code[i]
+	  revLookup[code.charCodeAt(i)] = i
+	}
 
-	var _CognitoUser = __webpack_require__(8);
+	revLookup['-'.charCodeAt(0)] = 62
+	revLookup['_'.charCodeAt(0)] = 63
 
-	var _CognitoUser2 = _interopRequireDefault(_CognitoUser);
-
-	var _StorageHelper = __webpack_require__(12);
-
-	var _StorageHelper2 = _interopRequireDefault(_StorageHelper);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*!
-	                                                                                                                                                           * Copyright 2016 Amazon.com,
-	                                                                                                                                                           * Inc. or its affiliates. All Rights Reserved.
-	                                                                                                                                                           *
-	                                                                                                                                                           * Licensed under the Amazon Software License (the "License").
-	                                                                                                                                                           * You may not use this file except in compliance with the
-	                                                                                                                                                           * License. A copy of the License is located at
-	                                                                                                                                                           *
-	                                                                                                                                                           *     http://aws.amazon.com/asl/
-	                                                                                                                                                           *
-	                                                                                                                                                           * or in the "license" file accompanying this file. This file is
-	                                                                                                                                                           * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-	                                                                                                                                                           * CONDITIONS OF ANY KIND, express or implied. See the License
-	                                                                                                                                                           * for the specific language governing permissions and
-	                                                                                                                                                           * limitations under the License.
-	                                                                                                                                                           */
-
-	/** @class */
-	var CognitoUserPool = function () {
-	  /**
-	   * Constructs a new CognitoUserPool object
-	   * @param {object} data Creation options.
-	   * @param {string} data.UserPoolId Cognito user pool id.
-	   * @param {string} data.ClientId User pool application client id.
-	   * @param {object} data.Storage Optional storage object.
-	   * @param {boolean} data.AdvancedSecurityDataCollectionFlag Optional:
-	   *        boolean flag indicating if the data collection is enabled
-	   *        to support cognito advanced security features. By default, this
-	   *        flag is set to true.
-	   */
-	  function CognitoUserPool(data) {
-	    _classCallCheck(this, CognitoUserPool);
-
-	    var _ref = data || {},
-	        UserPoolId = _ref.UserPoolId,
-	        ClientId = _ref.ClientId,
-	        endpoint = _ref.endpoint,
-	        AdvancedSecurityDataCollectionFlag = _ref.AdvancedSecurityDataCollectionFlag;
-
-	    if (!UserPoolId || !ClientId) {
-	      throw new Error('Both UserPoolId and ClientId are required.');
-	    }
-	    if (!/^[\w-]+_.+$/.test(UserPoolId)) {
-	      throw new Error('Invalid UserPoolId format.');
-	    }
-	    var region = UserPoolId.split('_')[0];
-
-	    this.userPoolId = UserPoolId;
-	    this.clientId = ClientId;
-
-	    this.client = new _cognitoidentityserviceprovider2.default({
-	      apiVersion: '2016-04-19',
-	      region: region,
-	      endpoint: endpoint
-	    });
-
-	    /**
-	     * By default, AdvancedSecurityDataCollectionFlag is set to true,
-	     * if no input value is provided.
-	     */
-	    this.advancedSecurityDataCollectionFlag = AdvancedSecurityDataCollectionFlag !== false;
-
-	    this.storage = data.Storage || new _StorageHelper2.default().getStorage();
+	function placeHoldersCount (b64) {
+	  var len = b64.length
+	  if (len % 4 > 0) {
+	    throw new Error('Invalid string. Length must be a multiple of 4')
 	  }
 
-	  /**
-	   * @returns {string} the user pool id
-	   */
+	  // the number of equal signs (place holders)
+	  // if there are two placeholders, than the two characters before it
+	  // represent one byte
+	  // if there is only one, then the three characters before it represent 2 bytes
+	  // this is just a cheap hack to not do indexOf twice
+	  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+	}
 
+	function byteLength (b64) {
+	  // base64 is 4/3 + up to two characters of the original data
+	  return (b64.length * 3 / 4) - placeHoldersCount(b64)
+	}
 
-	  CognitoUserPool.prototype.getUserPoolId = function getUserPoolId() {
-	    return this.userPoolId;
-	  };
+	function toByteArray (b64) {
+	  var i, l, tmp, placeHolders, arr
+	  var len = b64.length
+	  placeHolders = placeHoldersCount(b64)
 
-	  /**
-	   * @returns {string} the client id
-	   */
+	  arr = new Arr((len * 3 / 4) - placeHolders)
 
+	  // if there are placeholders, only get up to the last complete 4 chars
+	  l = placeHolders > 0 ? len - 4 : len
 
-	  CognitoUserPool.prototype.getClientId = function getClientId() {
-	    return this.clientId;
-	  };
+	  var L = 0
 
-	  /**
-	   * @typedef {object} SignUpResult
-	   * @property {CognitoUser} user New user.
-	   * @property {bool} userConfirmed If the user is already confirmed.
-	   */
-	  /**
-	   * method for signing up a user
-	   * @param {string} username User's username.
-	   * @param {string} password Plain-text initial password entered by user.
-	   * @param {(AttributeArg[])=} userAttributes New user attributes.
-	   * @param {(AttributeArg[])=} validationData Application metadata.
-	   * @param {nodeCallback<SignUpResult>} callback Called on error or with the new user.
-	   * @returns {void}
-	   */
+	  for (i = 0; i < l; i += 4) {
+	    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+	    arr[L++] = (tmp >> 16) & 0xFF
+	    arr[L++] = (tmp >> 8) & 0xFF
+	    arr[L++] = tmp & 0xFF
+	  }
 
+	  if (placeHolders === 2) {
+	    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+	    arr[L++] = tmp & 0xFF
+	  } else if (placeHolders === 1) {
+	    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+	    arr[L++] = (tmp >> 8) & 0xFF
+	    arr[L++] = tmp & 0xFF
+	  }
 
-	  CognitoUserPool.prototype.signUp = function signUp(username, password, userAttributes, validationData, callback) {
-	    var _this = this;
+	  return arr
+	}
 
-	    var jsonReq = {
-	      ClientId: this.clientId,
-	      Username: username,
-	      Password: password,
-	      UserAttributes: userAttributes,
-	      ValidationData: validationData
-	    };
-	    if (this.getUserContextData(username)) {
-	      jsonReq.UserContextData = this.getUserContextData(username);
-	    }
-	    this.client.makeUnauthenticatedRequest('signUp', jsonReq, function (err, data) {
-	      if (err) {
-	        return callback(err, null);
-	      }
+	function tripletToBase64 (num) {
+	  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+	}
 
-	      var cognitoUser = {
-	        Username: username,
-	        Pool: _this,
-	        Storage: _this.storage
-	      };
+	function encodeChunk (uint8, start, end) {
+	  var tmp
+	  var output = []
+	  for (var i = start; i < end; i += 3) {
+	    tmp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+	    output.push(tripletToBase64(tmp))
+	  }
+	  return output.join('')
+	}
 
-	      var returnData = {
-	        user: new _CognitoUser2.default(cognitoUser),
-	        userConfirmed: data.UserConfirmed,
-	        userSub: data.UserSub
-	      };
+	function fromByteArray (uint8) {
+	  var tmp
+	  var len = uint8.length
+	  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+	  var output = ''
+	  var parts = []
+	  var maxChunkLength = 16383 // must be multiple of 3
 
-	      return callback(null, returnData);
-	    });
-	  };
+	  // go through the array every three bytes, we'll deal with trailing stuff later
+	  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
+	    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+	  }
 
-	  /**
-	   * method for getting the current user of the application from the local storage
-	   *
-	   * @returns {CognitoUser} the user retrieved from storage
-	   */
+	  // pad the end with zeros, but make sure to not forget the extra bytes
+	  if (extraBytes === 1) {
+	    tmp = uint8[len - 1]
+	    output += lookup[tmp >> 2]
+	    output += lookup[(tmp << 4) & 0x3F]
+	    output += '=='
+	  } else if (extraBytes === 2) {
+	    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+	    output += lookup[tmp >> 10]
+	    output += lookup[(tmp >> 4) & 0x3F]
+	    output += lookup[(tmp << 2) & 0x3F]
+	    output += '='
+	  }
 
+	  parts.push(output)
 
-	  CognitoUserPool.prototype.getCurrentUser = function getCurrentUser() {
-	    var lastUserKey = 'CognitoIdentityServiceProvider.' + this.clientId + '.LastAuthUser';
+	  return parts.join('')
+	}
 
-	    var lastAuthUser = this.storage.getItem(lastUserKey);
-	    if (lastAuthUser) {
-	      var cognitoUser = {
-	        Username: lastAuthUser,
-	        Pool: this,
-	        Storage: this.storage
-	      };
-
-	      return new _CognitoUser2.default(cognitoUser);
-	    }
-
-	    return null;
-	  };
-
-	  /**
-	   * This method returns the encoded data string used for cognito advanced security feature.
-	   * This would be generated only when developer has included the JS used for collecting the
-	   * data on their client. Please refer to documentation to know more about using AdvancedSecurity
-	   * features
-	   * @param {string} username the username for the context data
-	   * @returns {string} the user context data
-	   **/
-
-
-	  CognitoUserPool.prototype.getUserContextData = function getUserContextData(username) {
-	    if (typeof AmazonCognitoAdvancedSecurityData === 'undefined') {
-	      return undefined;
-	    }
-	    /* eslint-disable */
-	    var amazonCognitoAdvancedSecurityDataConst = AmazonCognitoAdvancedSecurityData;
-	    /* eslint-enable */
-
-	    if (this.advancedSecurityDataCollectionFlag) {
-	      var advancedSecurityData = amazonCognitoAdvancedSecurityDataConst.getData(username, this.userPoolId, this.clientId);
-	      if (advancedSecurityData) {
-	        var userContextData = {
-	          EncodedData: advancedSecurityData
-	        };
-	        return userContextData;
-	      }
-	    }
-	    return {};
-	  };
-
-	  return CognitoUserPool;
-	}();
-
-	exports.default = CognitoUserPool;
 
 /***/ }),
 /* 16 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-	'use strict';
+	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+	  var e, m
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var nBits = -7
+	  var i = isLE ? (nBytes - 1) : 0
+	  var d = isLE ? -1 : 1
+	  var s = buffer[offset + i]
 
-	exports.__esModule = true;
+	  i += d
 
-	var _jsCookie = __webpack_require__(18);
+	  e = s & ((1 << (-nBits)) - 1)
+	  s >>= (-nBits)
+	  nBits += eLen
+	  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
-	var Cookies = _interopRequireWildcard(_jsCookie);
+	  m = e & ((1 << (-nBits)) - 1)
+	  e >>= (-nBits)
+	  nBits += mLen
+	  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+	  if (e === 0) {
+	    e = 1 - eBias
+	  } else if (e === eMax) {
+	    return m ? NaN : ((s ? -1 : 1) * Infinity)
+	  } else {
+	    m = m + Math.pow(2, mLen)
+	    e = e - eBias
+	  }
+	  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+	}
 
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+	  var e, m, c
+	  var eLen = nBytes * 8 - mLen - 1
+	  var eMax = (1 << eLen) - 1
+	  var eBias = eMax >> 1
+	  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+	  var i = isLE ? 0 : (nBytes - 1)
+	  var d = isLE ? 1 : -1
+	  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
 
-	/** @class */
-	var CookieStorage = function () {
+	  value = Math.abs(value)
 
-	  /**
-	   * Constructs a new CookieStorage object
-	   * @param {object} data Creation options.
-	   * @param {string} data.domain Cookies domain (mandatory).
-	   * @param {string} data.path Cookies path (default: '/')
-	   * @param {integer} data.expires Cookie expiration (in days, default: 365)
-	   * @param {boolean} data.secure Cookie secure flag (default: true)
-	   */
-	  function CookieStorage(data) {
-	    _classCallCheck(this, CookieStorage);
-
-	    this.domain = data.domain;
-	    if (data.path) {
-	      this.path = data.path;
-	    } else {
-	      this.path = '/';
+	  if (isNaN(value) || value === Infinity) {
+	    m = isNaN(value) ? 1 : 0
+	    e = eMax
+	  } else {
+	    e = Math.floor(Math.log(value) / Math.LN2)
+	    if (value * (c = Math.pow(2, -e)) < 1) {
+	      e--
+	      c *= 2
 	    }
-	    if (Object.prototype.hasOwnProperty.call(data, 'expires')) {
-	      this.expires = data.expires;
+	    if (e + eBias >= 1) {
+	      value += rt / c
 	    } else {
-	      this.expires = 365;
+	      value += rt * Math.pow(2, 1 - eBias)
 	    }
-	    if (Object.prototype.hasOwnProperty.call(data, 'secure')) {
-	      this.secure = data.secure;
+	    if (value * c >= 2) {
+	      e++
+	      c /= 2
+	    }
+
+	    if (e + eBias >= eMax) {
+	      m = 0
+	      e = eMax
+	    } else if (e + eBias >= 1) {
+	      m = (value * c - 1) * Math.pow(2, mLen)
+	      e = e + eBias
 	    } else {
-	      this.secure = true;
+	      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+	      e = 0
 	    }
 	  }
 
-	  /**
-	   * This is used to set a specific item in storage
-	   * @param {string} key - the key for the item
-	   * @param {object} value - the value
-	   * @returns {string} value that was set
-	   */
+	  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
 
+	  e = (e << mLen) | m
+	  eLen += mLen
+	  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
 
-	  CookieStorage.prototype.setItem = function setItem(key, value) {
-	    Cookies.set(key, value, {
-	      path: this.path,
-	      expires: this.expires,
-	      domain: this.domain,
-	      secure: this.secure
-	    });
-	    return Cookies.get(key);
-	  };
+	  buffer[offset + i - d] |= s * 128
+	}
 
-	  /**
-	   * This is used to get a specific key from storage
-	   * @param {string} key - the key for the item
-	   * This is used to clear the storage
-	   * @returns {string} the data item
-	   */
-
-
-	  CookieStorage.prototype.getItem = function getItem(key) {
-	    return Cookies.get(key);
-	  };
-
-	  /**
-	   * This is used to remove an item from storage
-	   * @param {string} key - the key being set
-	   * @returns {string} value - value that was deleted
-	   */
-
-
-	  CookieStorage.prototype.removeItem = function removeItem(key) {
-	    return Cookies.remove(key, {
-	      path: this.path,
-	      domain: this.domain,
-	      secure: this.secure
-	    });
-	  };
-
-	  /**
-	   * This is used to clear the storage
-	   * @returns {string} nothing
-	   */
-
-
-	  CookieStorage.prototype.clear = function clear() {
-	    var cookies = Cookies.get();
-	    var index = void 0;
-	    for (index = 0; index < cookies.length; ++index) {
-	      Cookies.remove(cookies[index]);
-	    }
-	    return {};
-	  };
-
-	  return CookieStorage;
-	}();
-
-	exports.default = CookieStorage;
 
 /***/ }),
 /* 17 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-	'use strict';
+	var toString = {}.toString;
 
-	exports.__esModule = true;
+	module.exports = Array.isArray || function (arr) {
+	  return toString.call(arr) == '[object Array]';
+	};
 
-	var _AuthenticationDetails = __webpack_require__(14);
-
-	Object.defineProperty(exports, 'AuthenticationDetails', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_AuthenticationDetails).default;
-	  }
-	});
-
-	var _AuthenticationHelper = __webpack_require__(2);
-
-	Object.defineProperty(exports, 'AuthenticationHelper', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_AuthenticationHelper).default;
-	  }
-	});
-
-	var _CognitoAccessToken = __webpack_require__(4);
-
-	Object.defineProperty(exports, 'CognitoAccessToken', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_CognitoAccessToken).default;
-	  }
-	});
-
-	var _CognitoIdToken = __webpack_require__(5);
-
-	Object.defineProperty(exports, 'CognitoIdToken', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_CognitoIdToken).default;
-	  }
-	});
-
-	var _CognitoRefreshToken = __webpack_require__(7);
-
-	Object.defineProperty(exports, 'CognitoRefreshToken', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_CognitoRefreshToken).default;
-	  }
-	});
-
-	var _CognitoUser = __webpack_require__(8);
-
-	Object.defineProperty(exports, 'CognitoUser', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_CognitoUser).default;
-	  }
-	});
-
-	var _CognitoUserAttribute = __webpack_require__(9);
-
-	Object.defineProperty(exports, 'CognitoUserAttribute', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_CognitoUserAttribute).default;
-	  }
-	});
-
-	var _CognitoUserPool = __webpack_require__(15);
-
-	Object.defineProperty(exports, 'CognitoUserPool', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_CognitoUserPool).default;
-	  }
-	});
-
-	var _CognitoUserSession = __webpack_require__(10);
-
-	Object.defineProperty(exports, 'CognitoUserSession', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_CognitoUserSession).default;
-	  }
-	});
-
-	var _CookieStorage = __webpack_require__(16);
-
-	Object.defineProperty(exports, 'CookieStorage', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_CookieStorage).default;
-	  }
-	});
-
-	var _DateHelper = __webpack_require__(11);
-
-	Object.defineProperty(exports, 'DateHelper', {
-	  enumerable: true,
-	  get: function get() {
-	    return _interopRequireDefault(_DateHelper).default;
-	  }
-	});
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// The version of crypto-browserify included by aws-sdk only
-	// checks for window.crypto, not window.msCrypto as used by
-	// IE 11 – so we set it explicitly here
-	if (typeof window !== 'undefined' && !window.crypto && window.msCrypto) {
-	  window.crypto = window.msCrypto;
-	}
 
 /***/ }),
 /* 18 */
@@ -4401,6 +6210,952 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		return init(function () {});
 	}));
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	exports.__esModule = true;
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	/*!
+	 * Copyright 2016 Amazon.com,
+	 * Inc. or its affiliates. All Rights Reserved.
+	 *
+	 * Licensed under the Amazon Software License (the "License").
+	 * You may not use this file except in compliance with the
+	 * License. A copy of the License is located at
+	 *
+	 *     http://aws.amazon.com/asl/
+	 *
+	 * or in the "license" file accompanying this file. This file is
+	 * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+	 * CONDITIONS OF ANY KIND, express or implied. See the License
+	 * for the specific language governing permissions and
+	 * limitations under the License.
+	 */
+
+	/** @class */
+	var AuthenticationDetails = function () {
+	  /**
+	   * Constructs a new AuthenticationDetails object
+	   * @param {object=} data Creation options.
+	   * @param {string} data.Username User being authenticated.
+	   * @param {string} data.Password Plain-text password to authenticate with.
+	   * @param {(AttributeArg[])?} data.ValidationData Application extra metadata.
+	   * @param {(AttributeArg[])?} data.AuthParamaters Authentication paramaters for custom auth.
+	   */
+	  function AuthenticationDetails(data) {
+	    _classCallCheck(this, AuthenticationDetails);
+
+	    var _ref = data || {},
+	        ValidationData = _ref.ValidationData,
+	        Username = _ref.Username,
+	        Password = _ref.Password,
+	        AuthParameters = _ref.AuthParameters;
+
+	    this.validationData = ValidationData || {};
+	    this.authParameters = AuthParameters || {};
+	    this.username = Username;
+	    this.password = Password;
+	  }
+
+	  /**
+	   * @returns {string} the record's username
+	   */
+
+
+	  AuthenticationDetails.prototype.getUsername = function getUsername() {
+	    return this.username;
+	  };
+
+	  /**
+	   * @returns {string} the record's password
+	   */
+
+
+	  AuthenticationDetails.prototype.getPassword = function getPassword() {
+	    return this.password;
+	  };
+
+	  /**
+	   * @returns {Array} the record's validationData
+	   */
+
+
+	  AuthenticationDetails.prototype.getValidationData = function getValidationData() {
+	    return this.validationData;
+	  };
+
+	  /**
+	   * @returns {Array} the record's authParameters
+	   */
+
+
+	  AuthenticationDetails.prototype.getAuthParameters = function getAuthParameters() {
+	    return this.authParameters;
+	  };
+
+	  return AuthenticationDetails;
+	}();
+
+	exports.default = AuthenticationDetails;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _UserAgent = __webpack_require__(23);
+
+	var _UserAgent2 = _interopRequireDefault(_UserAgent);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	/** @class */
+	var Client = function () {
+	  /**
+	   * Constructs a new AWS Cognito Identity Provider client object
+	   * @param {string} region AWS region
+	   * @param {string} endpoint endpoint
+	   */
+	  function Client(region, endpoint) {
+	    _classCallCheck(this, Client);
+
+	    this.endpoint = endpoint || 'https://cognito-idp.' + region + '.amazonaws.com/';
+	    this.userAgent = _UserAgent2.default.prototype.userAgent || 'aws-amplify/0.1.x js';
+	  }
+
+	  /**
+	   * Makes an unauthenticated request on AWS Cognito Identity Provider API
+	   * using fetch
+	   * @param {string} operation API operation
+	   * @param {object} params Input parameters
+	   * @param {function} callback Callback called when a response is returned
+	   * @returns {void}
+	  */
+
+
+	  Client.prototype.request = function request(operation, params, callback) {
+	    var headers = {
+	      'Content-Type': 'application/x-amz-json-1.1',
+	      'X-Amz-Target': 'AWSCognitoIdentityProviderService.' + operation,
+	      'X-Amz-User-Agent': this.userAgent
+	    };
+
+	    var options = {
+	      headers: headers,
+	      method: 'POST',
+	      mode: 'cors',
+	      cache: 'no-cache',
+	      body: JSON.stringify(params)
+	    };
+
+	    var response = void 0;
+
+	    fetch(this.endpoint, options).then(function (resp) {
+	      response = resp;
+	      return resp;
+	    }, function (err) {
+	      // If error happens here, the request failed
+	      // if it is TypeError throw network error
+	      if (err instanceof TypeError) {
+	        throw new Error('Network error');
+	      }
+	      throw err;
+	    }).then(function (resp) {
+	      return resp.json().catch(function () {
+	        return {};
+	      });
+	    }).then(function (data) {
+	      if (response.ok) return callback(null, data);
+
+	      // Taken from aws-sdk-js/lib/protocol/json.js
+	      // eslint-disable-next-line no-underscore-dangle
+	      var code = (data.__type || data.code).split('#').pop();
+	      var error = {
+	        code: code,
+	        name: code,
+	        message: data.message || data.Message || null
+	      };
+	      return callback(error);
+	    }).catch(function () {
+	      // default to return 'UnknownError'
+	      var error = { code: 'UnknownError', message: 'Unkown error' };
+
+	      // first check if we have a service error
+	      if (response && response.headers && response.headers.get('x-amzn-errortype')) {
+	        try {
+	          var code = response.headers.get('x-amz-errortype').split(':')[0];
+	          error = {
+	            code: code,
+	            name: code,
+	            statusCode: response.status,
+	            message: response.status ? response.status.toString() : null
+	          };
+	        } catch (ex) {}
+	        // pass through so it doesn't get swallowed if we can't parse it
+
+	        // otherwise check if error is Network error
+	      } else if (err instanceof Error) {
+	        error = {
+	          code: 'UnknownError',
+	          name: err.name,
+	          message: err.message
+	        };
+	      }
+	      return callback(error);
+	    });
+	  };
+
+	  return Client;
+	}();
+
+	exports.default = Client;
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _Client = __webpack_require__(20);
+
+	var _Client2 = _interopRequireDefault(_Client);
+
+	var _CognitoUser = __webpack_require__(9);
+
+	var _CognitoUser2 = _interopRequireDefault(_CognitoUser);
+
+	var _StorageHelper = __webpack_require__(13);
+
+	var _StorageHelper2 = _interopRequireDefault(_StorageHelper);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*!
+	                                                                                                                                                           * Copyright 2016 Amazon.com,
+	                                                                                                                                                           * Inc. or its affiliates. All Rights Reserved.
+	                                                                                                                                                           *
+	                                                                                                                                                           * Licensed under the Amazon Software License (the "License").
+	                                                                                                                                                           * You may not use this file except in compliance with the
+	                                                                                                                                                           * License. A copy of the License is located at
+	                                                                                                                                                           *
+	                                                                                                                                                           *     http://aws.amazon.com/asl/
+	                                                                                                                                                           *
+	                                                                                                                                                           * or in the "license" file accompanying this file. This file is
+	                                                                                                                                                           * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+	                                                                                                                                                           * CONDITIONS OF ANY KIND, express or implied. See the License
+	                                                                                                                                                           * for the specific language governing permissions and
+	                                                                                                                                                           * limitations under the License.
+	                                                                                                                                                           */
+
+	/** @class */
+	var CognitoUserPool = function () {
+	  /**
+	   * Constructs a new CognitoUserPool object
+	   * @param {object} data Creation options.
+	   * @param {string} data.UserPoolId Cognito user pool id.
+	   * @param {string} data.ClientId User pool application client id.
+	   * @param {object} data.Storage Optional storage object.
+	   * @param {boolean} data.AdvancedSecurityDataCollectionFlag Optional:
+	   *        boolean flag indicating if the data collection is enabled
+	   *        to support cognito advanced security features. By default, this
+	   *        flag is set to true.
+	   */
+	  function CognitoUserPool(data) {
+	    _classCallCheck(this, CognitoUserPool);
+
+	    var _ref = data || {},
+	        UserPoolId = _ref.UserPoolId,
+	        ClientId = _ref.ClientId,
+	        endpoint = _ref.endpoint,
+	        AdvancedSecurityDataCollectionFlag = _ref.AdvancedSecurityDataCollectionFlag;
+
+	    if (!UserPoolId || !ClientId) {
+	      throw new Error('Both UserPoolId and ClientId are required.');
+	    }
+	    if (!/^[\w-]+_.+$/.test(UserPoolId)) {
+	      throw new Error('Invalid UserPoolId format.');
+	    }
+	    var region = UserPoolId.split('_')[0];
+
+	    this.userPoolId = UserPoolId;
+	    this.clientId = ClientId;
+
+	    this.client = new _Client2.default(region, endpoint);
+
+	    /**
+	     * By default, AdvancedSecurityDataCollectionFlag is set to true,
+	     * if no input value is provided.
+	     */
+	    this.advancedSecurityDataCollectionFlag = AdvancedSecurityDataCollectionFlag !== false;
+
+	    this.storage = data.Storage || new _StorageHelper2.default().getStorage();
+	  }
+
+	  /**
+	   * @returns {string} the user pool id
+	   */
+
+
+	  CognitoUserPool.prototype.getUserPoolId = function getUserPoolId() {
+	    return this.userPoolId;
+	  };
+
+	  /**
+	   * @returns {string} the client id
+	   */
+
+
+	  CognitoUserPool.prototype.getClientId = function getClientId() {
+	    return this.clientId;
+	  };
+
+	  /**
+	   * @typedef {object} SignUpResult
+	   * @property {CognitoUser} user New user.
+	   * @property {bool} userConfirmed If the user is already confirmed.
+	   */
+	  /**
+	   * method for signing up a user
+	   * @param {string} username User's username.
+	   * @param {string} password Plain-text initial password entered by user.
+	   * @param {(AttributeArg[])=} userAttributes New user attributes.
+	   * @param {(AttributeArg[])=} validationData Application metadata.
+	   * @param {nodeCallback<SignUpResult>} callback Called on error or with the new user.
+	   * @returns {void}
+	   */
+
+
+	  CognitoUserPool.prototype.signUp = function signUp(username, password, userAttributes, validationData, callback) {
+	    var _this = this;
+
+	    var jsonReq = {
+	      ClientId: this.clientId,
+	      Username: username,
+	      Password: password,
+	      UserAttributes: userAttributes,
+	      ValidationData: validationData
+	    };
+	    if (this.getUserContextData(username)) {
+	      jsonReq.UserContextData = this.getUserContextData(username);
+	    }
+	    this.client.request('SignUp', jsonReq, function (err, data) {
+	      if (err) {
+	        return callback(err, null);
+	      }
+
+	      var cognitoUser = {
+	        Username: username,
+	        Pool: _this,
+	        Storage: _this.storage
+	      };
+
+	      var returnData = {
+	        user: new _CognitoUser2.default(cognitoUser),
+	        userConfirmed: data.UserConfirmed,
+	        userSub: data.UserSub
+	      };
+
+	      return callback(null, returnData);
+	    });
+	  };
+
+	  /**
+	   * method for getting the current user of the application from the local storage
+	   *
+	   * @returns {CognitoUser} the user retrieved from storage
+	   */
+
+
+	  CognitoUserPool.prototype.getCurrentUser = function getCurrentUser() {
+	    var lastUserKey = 'CognitoIdentityServiceProvider.' + this.clientId + '.LastAuthUser';
+
+	    var lastAuthUser = this.storage.getItem(lastUserKey);
+	    if (lastAuthUser) {
+	      var cognitoUser = {
+	        Username: lastAuthUser,
+	        Pool: this,
+	        Storage: this.storage
+	      };
+
+	      return new _CognitoUser2.default(cognitoUser);
+	    }
+
+	    return null;
+	  };
+
+	  /**
+	   * This method returns the encoded data string used for cognito advanced security feature.
+	   * This would be generated only when developer has included the JS used for collecting the
+	   * data on their client. Please refer to documentation to know more about using AdvancedSecurity
+	   * features
+	   * @param {string} username the username for the context data
+	   * @returns {string} the user context data
+	   **/
+
+
+	  CognitoUserPool.prototype.getUserContextData = function getUserContextData(username) {
+	    if (typeof AmazonCognitoAdvancedSecurityData === 'undefined') {
+	      return undefined;
+	    }
+	    /* eslint-disable */
+	    var amazonCognitoAdvancedSecurityDataConst = AmazonCognitoAdvancedSecurityData;
+	    /* eslint-enable */
+
+	    if (this.advancedSecurityDataCollectionFlag) {
+	      var advancedSecurityData = amazonCognitoAdvancedSecurityDataConst.getData(username, this.userPoolId, this.clientId);
+	      if (advancedSecurityData) {
+	        var userContextData = {
+	          EncodedData: advancedSecurityData
+	        };
+	        return userContextData;
+	      }
+	    }
+	    return {};
+	  };
+
+	  return CognitoUserPool;
+	}();
+
+	exports.default = CognitoUserPool;
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _jsCookie = __webpack_require__(18);
+
+	var Cookies = _interopRequireWildcard(_jsCookie);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	/** @class */
+	var CookieStorage = function () {
+
+	  /**
+	   * Constructs a new CookieStorage object
+	   * @param {object} data Creation options.
+	   * @param {string} data.domain Cookies domain (mandatory).
+	   * @param {string} data.path Cookies path (default: '/')
+	   * @param {integer} data.expires Cookie expiration (in days, default: 365)
+	   * @param {boolean} data.secure Cookie secure flag (default: true)
+	   */
+	  function CookieStorage(data) {
+	    _classCallCheck(this, CookieStorage);
+
+	    this.domain = data.domain;
+	    if (data.path) {
+	      this.path = data.path;
+	    } else {
+	      this.path = '/';
+	    }
+	    if (Object.prototype.hasOwnProperty.call(data, 'expires')) {
+	      this.expires = data.expires;
+	    } else {
+	      this.expires = 365;
+	    }
+	    if (Object.prototype.hasOwnProperty.call(data, 'secure')) {
+	      this.secure = data.secure;
+	    } else {
+	      this.secure = true;
+	    }
+	  }
+
+	  /**
+	   * This is used to set a specific item in storage
+	   * @param {string} key - the key for the item
+	   * @param {object} value - the value
+	   * @returns {string} value that was set
+	   */
+
+
+	  CookieStorage.prototype.setItem = function setItem(key, value) {
+	    Cookies.set(key, value, {
+	      path: this.path,
+	      expires: this.expires,
+	      domain: this.domain,
+	      secure: this.secure
+	    });
+	    return Cookies.get(key);
+	  };
+
+	  /**
+	   * This is used to get a specific key from storage
+	   * @param {string} key - the key for the item
+	   * This is used to clear the storage
+	   * @returns {string} the data item
+	   */
+
+
+	  CookieStorage.prototype.getItem = function getItem(key) {
+	    return Cookies.get(key);
+	  };
+
+	  /**
+	   * This is used to remove an item from storage
+	   * @param {string} key - the key being set
+	   * @returns {string} value - value that was deleted
+	   */
+
+
+	  CookieStorage.prototype.removeItem = function removeItem(key) {
+	    return Cookies.remove(key, {
+	      path: this.path,
+	      domain: this.domain,
+	      secure: this.secure
+	    });
+	  };
+
+	  /**
+	   * This is used to clear the storage
+	   * @returns {string} nothing
+	   */
+
+
+	  CookieStorage.prototype.clear = function clear() {
+	    var cookies = Cookies.get();
+	    var index = void 0;
+	    for (index = 0; index < cookies.length; ++index) {
+	      Cookies.remove(cookies[index]);
+	    }
+	    return {};
+	  };
+
+	  return CookieStorage;
+	}();
+
+	exports.default = CookieStorage;
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	exports.__esModule = true;
+	// class for defining the amzn user-agent
+	exports.default = UserAgent;
+	// constructor
+
+	function UserAgent() {}
+	// public
+	UserAgent.prototype.userAgent = 'aws-amplify/0.1.x js';
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+	 * Digest Algorithm, as defined in RFC 1321.
+	 * Version 2.1 Copyright (C) Paul Johnston 1999 - 2002.
+	 * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+	 * Distributed under the BSD License
+	 * See http://pajhome.org.uk/crypt/md5 for more info.
+	 */
+
+	var helpers = __webpack_require__(2);
+
+	/*
+	 * Perform a simple self-test to see if the VM is working
+	 */
+	function md5_vm_test()
+	{
+	  return hex_md5("abc") == "900150983cd24fb0d6963f7d28e17f72";
+	}
+
+	/*
+	 * Calculate the MD5 of an array of little-endian words, and a bit length
+	 */
+	function core_md5(x, len)
+	{
+	  /* append padding */
+	  x[len >> 5] |= 0x80 << ((len) % 32);
+	  x[(((len + 64) >>> 9) << 4) + 14] = len;
+
+	  var a =  1732584193;
+	  var b = -271733879;
+	  var c = -1732584194;
+	  var d =  271733878;
+
+	  for(var i = 0; i < x.length; i += 16)
+	  {
+	    var olda = a;
+	    var oldb = b;
+	    var oldc = c;
+	    var oldd = d;
+
+	    a = md5_ff(a, b, c, d, x[i+ 0], 7 , -680876936);
+	    d = md5_ff(d, a, b, c, x[i+ 1], 12, -389564586);
+	    c = md5_ff(c, d, a, b, x[i+ 2], 17,  606105819);
+	    b = md5_ff(b, c, d, a, x[i+ 3], 22, -1044525330);
+	    a = md5_ff(a, b, c, d, x[i+ 4], 7 , -176418897);
+	    d = md5_ff(d, a, b, c, x[i+ 5], 12,  1200080426);
+	    c = md5_ff(c, d, a, b, x[i+ 6], 17, -1473231341);
+	    b = md5_ff(b, c, d, a, x[i+ 7], 22, -45705983);
+	    a = md5_ff(a, b, c, d, x[i+ 8], 7 ,  1770035416);
+	    d = md5_ff(d, a, b, c, x[i+ 9], 12, -1958414417);
+	    c = md5_ff(c, d, a, b, x[i+10], 17, -42063);
+	    b = md5_ff(b, c, d, a, x[i+11], 22, -1990404162);
+	    a = md5_ff(a, b, c, d, x[i+12], 7 ,  1804603682);
+	    d = md5_ff(d, a, b, c, x[i+13], 12, -40341101);
+	    c = md5_ff(c, d, a, b, x[i+14], 17, -1502002290);
+	    b = md5_ff(b, c, d, a, x[i+15], 22,  1236535329);
+
+	    a = md5_gg(a, b, c, d, x[i+ 1], 5 , -165796510);
+	    d = md5_gg(d, a, b, c, x[i+ 6], 9 , -1069501632);
+	    c = md5_gg(c, d, a, b, x[i+11], 14,  643717713);
+	    b = md5_gg(b, c, d, a, x[i+ 0], 20, -373897302);
+	    a = md5_gg(a, b, c, d, x[i+ 5], 5 , -701558691);
+	    d = md5_gg(d, a, b, c, x[i+10], 9 ,  38016083);
+	    c = md5_gg(c, d, a, b, x[i+15], 14, -660478335);
+	    b = md5_gg(b, c, d, a, x[i+ 4], 20, -405537848);
+	    a = md5_gg(a, b, c, d, x[i+ 9], 5 ,  568446438);
+	    d = md5_gg(d, a, b, c, x[i+14], 9 , -1019803690);
+	    c = md5_gg(c, d, a, b, x[i+ 3], 14, -187363961);
+	    b = md5_gg(b, c, d, a, x[i+ 8], 20,  1163531501);
+	    a = md5_gg(a, b, c, d, x[i+13], 5 , -1444681467);
+	    d = md5_gg(d, a, b, c, x[i+ 2], 9 , -51403784);
+	    c = md5_gg(c, d, a, b, x[i+ 7], 14,  1735328473);
+	    b = md5_gg(b, c, d, a, x[i+12], 20, -1926607734);
+
+	    a = md5_hh(a, b, c, d, x[i+ 5], 4 , -378558);
+	    d = md5_hh(d, a, b, c, x[i+ 8], 11, -2022574463);
+	    c = md5_hh(c, d, a, b, x[i+11], 16,  1839030562);
+	    b = md5_hh(b, c, d, a, x[i+14], 23, -35309556);
+	    a = md5_hh(a, b, c, d, x[i+ 1], 4 , -1530992060);
+	    d = md5_hh(d, a, b, c, x[i+ 4], 11,  1272893353);
+	    c = md5_hh(c, d, a, b, x[i+ 7], 16, -155497632);
+	    b = md5_hh(b, c, d, a, x[i+10], 23, -1094730640);
+	    a = md5_hh(a, b, c, d, x[i+13], 4 ,  681279174);
+	    d = md5_hh(d, a, b, c, x[i+ 0], 11, -358537222);
+	    c = md5_hh(c, d, a, b, x[i+ 3], 16, -722521979);
+	    b = md5_hh(b, c, d, a, x[i+ 6], 23,  76029189);
+	    a = md5_hh(a, b, c, d, x[i+ 9], 4 , -640364487);
+	    d = md5_hh(d, a, b, c, x[i+12], 11, -421815835);
+	    c = md5_hh(c, d, a, b, x[i+15], 16,  530742520);
+	    b = md5_hh(b, c, d, a, x[i+ 2], 23, -995338651);
+
+	    a = md5_ii(a, b, c, d, x[i+ 0], 6 , -198630844);
+	    d = md5_ii(d, a, b, c, x[i+ 7], 10,  1126891415);
+	    c = md5_ii(c, d, a, b, x[i+14], 15, -1416354905);
+	    b = md5_ii(b, c, d, a, x[i+ 5], 21, -57434055);
+	    a = md5_ii(a, b, c, d, x[i+12], 6 ,  1700485571);
+	    d = md5_ii(d, a, b, c, x[i+ 3], 10, -1894986606);
+	    c = md5_ii(c, d, a, b, x[i+10], 15, -1051523);
+	    b = md5_ii(b, c, d, a, x[i+ 1], 21, -2054922799);
+	    a = md5_ii(a, b, c, d, x[i+ 8], 6 ,  1873313359);
+	    d = md5_ii(d, a, b, c, x[i+15], 10, -30611744);
+	    c = md5_ii(c, d, a, b, x[i+ 6], 15, -1560198380);
+	    b = md5_ii(b, c, d, a, x[i+13], 21,  1309151649);
+	    a = md5_ii(a, b, c, d, x[i+ 4], 6 , -145523070);
+	    d = md5_ii(d, a, b, c, x[i+11], 10, -1120210379);
+	    c = md5_ii(c, d, a, b, x[i+ 2], 15,  718787259);
+	    b = md5_ii(b, c, d, a, x[i+ 9], 21, -343485551);
+
+	    a = safe_add(a, olda);
+	    b = safe_add(b, oldb);
+	    c = safe_add(c, oldc);
+	    d = safe_add(d, oldd);
+	  }
+	  return Array(a, b, c, d);
+
+	}
+
+	/*
+	 * These functions implement the four basic operations the algorithm uses.
+	 */
+	function md5_cmn(q, a, b, x, s, t)
+	{
+	  return safe_add(bit_rol(safe_add(safe_add(a, q), safe_add(x, t)), s),b);
+	}
+	function md5_ff(a, b, c, d, x, s, t)
+	{
+	  return md5_cmn((b & c) | ((~b) & d), a, b, x, s, t);
+	}
+	function md5_gg(a, b, c, d, x, s, t)
+	{
+	  return md5_cmn((b & d) | (c & (~d)), a, b, x, s, t);
+	}
+	function md5_hh(a, b, c, d, x, s, t)
+	{
+	  return md5_cmn(b ^ c ^ d, a, b, x, s, t);
+	}
+	function md5_ii(a, b, c, d, x, s, t)
+	{
+	  return md5_cmn(c ^ (b | (~d)), a, b, x, s, t);
+	}
+
+	/*
+	 * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+	 * to work around bugs in some JS interpreters.
+	 */
+	function safe_add(x, y)
+	{
+	  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+	  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+	  return (msw << 16) | (lsw & 0xFFFF);
+	}
+
+	/*
+	 * Bitwise rotate a 32-bit number to the left.
+	 */
+	function bit_rol(num, cnt)
+	{
+	  return (num << cnt) | (num >>> (32 - cnt));
+	}
+
+	module.exports = function md5(buf) {
+	  return helpers.hash(buf, core_md5, 16);
+	};
+
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports) {
+
+	// Original code adapted from Robert Kieffer.
+	// details at https://github.com/broofa/node-uuid
+	(function() {
+	  var _global = this;
+
+	  var mathRNG, whatwgRNG;
+
+	  // NOTE: Math.random() does not guarantee "cryptographic quality"
+	  mathRNG = function(size) {
+	    var bytes = new Array(size);
+	    var r;
+
+	    for (var i = 0, r; i < size; i++) {
+	      if ((i & 0x03) == 0) r = Math.random() * 0x100000000;
+	      bytes[i] = r >>> ((i & 0x03) << 3) & 0xff;
+	    }
+
+	    return bytes;
+	  }
+
+	  if (_global.crypto && crypto.getRandomValues) {
+	    whatwgRNG = function(size) {
+	      var bytes = new Uint8Array(size);
+	      crypto.getRandomValues(bytes);
+	      return bytes;
+	    }
+	  }
+
+	  module.exports = whatwgRNG || mathRNG;
+
+	}())
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	/*
+	 * A JavaScript implementation of the Secure Hash Algorithm, SHA-1, as defined
+	 * in FIPS PUB 180-1
+	 * Version 2.1a Copyright Paul Johnston 2000 - 2002.
+	 * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+	 * Distributed under the BSD License
+	 * See http://pajhome.org.uk/crypt/md5 for details.
+	 */
+
+	var helpers = __webpack_require__(2);
+
+	/*
+	 * Calculate the SHA-1 of an array of big-endian words, and a bit length
+	 */
+	function core_sha1(x, len)
+	{
+	  /* append padding */
+	  x[len >> 5] |= 0x80 << (24 - len % 32);
+	  x[((len + 64 >> 9) << 4) + 15] = len;
+
+	  var w = Array(80);
+	  var a =  1732584193;
+	  var b = -271733879;
+	  var c = -1732584194;
+	  var d =  271733878;
+	  var e = -1009589776;
+
+	  for(var i = 0; i < x.length; i += 16)
+	  {
+	    var olda = a;
+	    var oldb = b;
+	    var oldc = c;
+	    var oldd = d;
+	    var olde = e;
+
+	    for(var j = 0; j < 80; j++)
+	    {
+	      if(j < 16) w[j] = x[i + j];
+	      else w[j] = rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1);
+	      var t = safe_add(safe_add(rol(a, 5), sha1_ft(j, b, c, d)),
+	                       safe_add(safe_add(e, w[j]), sha1_kt(j)));
+	      e = d;
+	      d = c;
+	      c = rol(b, 30);
+	      b = a;
+	      a = t;
+	    }
+
+	    a = safe_add(a, olda);
+	    b = safe_add(b, oldb);
+	    c = safe_add(c, oldc);
+	    d = safe_add(d, oldd);
+	    e = safe_add(e, olde);
+	  }
+	  return Array(a, b, c, d, e);
+
+	}
+
+	/*
+	 * Perform the appropriate triplet combination function for the current
+	 * iteration
+	 */
+	function sha1_ft(t, b, c, d)
+	{
+	  if(t < 20) return (b & c) | ((~b) & d);
+	  if(t < 40) return b ^ c ^ d;
+	  if(t < 60) return (b & c) | (b & d) | (c & d);
+	  return b ^ c ^ d;
+	}
+
+	/*
+	 * Determine the appropriate additive constant for the current iteration
+	 */
+	function sha1_kt(t)
+	{
+	  return (t < 20) ?  1518500249 : (t < 40) ?  1859775393 :
+	         (t < 60) ? -1894007588 : -899497514;
+	}
+
+	/*
+	 * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+	 * to work around bugs in some JS interpreters.
+	 */
+	function safe_add(x, y)
+	{
+	  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+	  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+	  return (msw << 16) | (lsw & 0xFFFF);
+	}
+
+	/*
+	 * Bitwise rotate a 32-bit number to the left.
+	 */
+	function rol(num, cnt)
+	{
+	  return (num << cnt) | (num >>> (32 - cnt));
+	}
+
+	module.exports = function sha1(buf) {
+	  return helpers.hash(buf, core_sha1, 20, true);
+	};
+
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	
+	/**
+	 * A JavaScript implementation of the Secure Hash Algorithm, SHA-256, as defined
+	 * in FIPS 180-2
+	 * Version 2.2-beta Copyright Angel Marin, Paul Johnston 2000 - 2009.
+	 * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+	 *
+	 */
+
+	var helpers = __webpack_require__(2);
+
+	var safe_add = function(x, y) {
+	  var lsw = (x & 0xFFFF) + (y & 0xFFFF);
+	  var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+	  return (msw << 16) | (lsw & 0xFFFF);
+	};
+
+	var S = function(X, n) {
+	  return (X >>> n) | (X << (32 - n));
+	};
+
+	var R = function(X, n) {
+	  return (X >>> n);
+	};
+
+	var Ch = function(x, y, z) {
+	  return ((x & y) ^ ((~x) & z));
+	};
+
+	var Maj = function(x, y, z) {
+	  return ((x & y) ^ (x & z) ^ (y & z));
+	};
+
+	var Sigma0256 = function(x) {
+	  return (S(x, 2) ^ S(x, 13) ^ S(x, 22));
+	};
+
+	var Sigma1256 = function(x) {
+	  return (S(x, 6) ^ S(x, 11) ^ S(x, 25));
+	};
+
+	var Gamma0256 = function(x) {
+	  return (S(x, 7) ^ S(x, 18) ^ R(x, 3));
+	};
+
+	var Gamma1256 = function(x) {
+	  return (S(x, 17) ^ S(x, 19) ^ R(x, 10));
+	};
+
+	var core_sha256 = function(m, l) {
+	  var K = new Array(0x428A2F98,0x71374491,0xB5C0FBCF,0xE9B5DBA5,0x3956C25B,0x59F111F1,0x923F82A4,0xAB1C5ED5,0xD807AA98,0x12835B01,0x243185BE,0x550C7DC3,0x72BE5D74,0x80DEB1FE,0x9BDC06A7,0xC19BF174,0xE49B69C1,0xEFBE4786,0xFC19DC6,0x240CA1CC,0x2DE92C6F,0x4A7484AA,0x5CB0A9DC,0x76F988DA,0x983E5152,0xA831C66D,0xB00327C8,0xBF597FC7,0xC6E00BF3,0xD5A79147,0x6CA6351,0x14292967,0x27B70A85,0x2E1B2138,0x4D2C6DFC,0x53380D13,0x650A7354,0x766A0ABB,0x81C2C92E,0x92722C85,0xA2BFE8A1,0xA81A664B,0xC24B8B70,0xC76C51A3,0xD192E819,0xD6990624,0xF40E3585,0x106AA070,0x19A4C116,0x1E376C08,0x2748774C,0x34B0BCB5,0x391C0CB3,0x4ED8AA4A,0x5B9CCA4F,0x682E6FF3,0x748F82EE,0x78A5636F,0x84C87814,0x8CC70208,0x90BEFFFA,0xA4506CEB,0xBEF9A3F7,0xC67178F2);
+	  var HASH = new Array(0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19);
+	    var W = new Array(64);
+	    var a, b, c, d, e, f, g, h, i, j;
+	    var T1, T2;
+	  /* append padding */
+	  m[l >> 5] |= 0x80 << (24 - l % 32);
+	  m[((l + 64 >> 9) << 4) + 15] = l;
+	  for (var i = 0; i < m.length; i += 16) {
+	    a = HASH[0]; b = HASH[1]; c = HASH[2]; d = HASH[3]; e = HASH[4]; f = HASH[5]; g = HASH[6]; h = HASH[7];
+	    for (var j = 0; j < 64; j++) {
+	      if (j < 16) {
+	        W[j] = m[j + i];
+	      } else {
+	        W[j] = safe_add(safe_add(safe_add(Gamma1256(W[j - 2]), W[j - 7]), Gamma0256(W[j - 15])), W[j - 16]);
+	      }
+	      T1 = safe_add(safe_add(safe_add(safe_add(h, Sigma1256(e)), Ch(e, f, g)), K[j]), W[j]);
+	      T2 = safe_add(Sigma0256(a), Maj(a, b, c));
+	      h = g; g = f; f = e; e = safe_add(d, T1); d = c; c = b; b = a; a = safe_add(T1, T2);
+	    }
+	    HASH[0] = safe_add(a, HASH[0]); HASH[1] = safe_add(b, HASH[1]); HASH[2] = safe_add(c, HASH[2]); HASH[3] = safe_add(d, HASH[3]);
+	    HASH[4] = safe_add(e, HASH[4]); HASH[5] = safe_add(f, HASH[5]); HASH[6] = safe_add(g, HASH[6]); HASH[7] = safe_add(h, HASH[7]);
+	  }
+	  return HASH;
+	};
+
+	module.exports = function sha256(buf) {
+	  return helpers.hash(buf, core_sha256, 32, true);
+	};
 
 
 /***/ })
